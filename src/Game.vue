@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <img src="./assets/logo.png">
+    <HelloWorld msg="Welcome to Your Game"/>
   </div>
 </template>
 

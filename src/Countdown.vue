@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <img src="./assets/logo.png">
+    <HelloWorld msg="Welcome to Countdown"/>
   </div>
 </template>
 
@@ -8,7 +9,7 @@
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  name: 'app',
+  name: 'countdown',
   components: {
     HelloWorld
   }
