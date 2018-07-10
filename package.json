@@ -1,0 +1,61 @@
+{
+  "name": "countdowndevfest2018",
+  "version": "1.0.0",
+  "description": "CountDown game for DevFest Nantes 2018",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vue": "vue",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GDG-Nantes/CountDownDevFest2018.git"
+  },
+  "keywords": [
+    "vuejs",
+    "pwa",
+    "game"
+  ],
+  "author": "jefBinomed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GDG-Nantes/CountDownDevFest2018/issues"
+  },
+  "homepage": "https://github.com/GDG-Nantes/CountDownDevFest2018#readme",
+  "dependencies": {
+    "@vue/cli": "^3.0.0-rc.3",
+    "vue": "^2.5.16"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-service": "^3.0.0-beta.15",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

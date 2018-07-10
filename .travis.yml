@@ -1,0 +1,20 @@
+language: node_js
+
+os:
+  - linux
+
+node_js:
+  - "9.4"
+sudo: required
+
+addons:
+  chrome: stable
+
+before_script:
+
+script:
+ - yarn
+
+after_success:
+  - yarn lint
+  - yarn build
