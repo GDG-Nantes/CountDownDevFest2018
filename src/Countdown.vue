@@ -21,25 +21,10 @@ export default {
         // This is the CanvasRenderingContext that children will draw to.
         context: null
       },
-      exampleContent: 'This is TEXT',
       time : 1
     }
   },
   methods: {
-    updateCanvas: function (){
-
-      // Since the parent canvas has to mount first, it's *possible* that the context may not be
-    // injected by the time this render function runs the first time.
-      if(!this.provider.context) return;
-      const ctx = this.provider.context;
-      const canvas = this.provider.canvas;
-      //var canvas = document.getElementById('canvas'),
-      //    ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = "black";
-      ctx.font="20px Georgia";
-      ctx.fillText(this.exampleContent,10,50);
-    },
     circle: function(radius, color, x, y) {
         if(!this.provider.context) return;
         const ctx = this.provider.context;
