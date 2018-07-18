@@ -156,12 +156,27 @@ export default {
 			this.text('Sun', 'black', '15pt arial', -16, 7);
 
 
-      for (let planet of this.planets){
+      /*for (let planet of this.planets){
         //JF
         ctx.save();
         ctx.rotate(time / planet.speed);
         ctx.translate(planet.distance, 0);
         ctx.rotate(-time / planet.speed);
+        this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
+
+        ctx.restore();
+      }*/
+
+      for (let planet of this.planets){
+        //JF
+        ctx.save();
+        const angle = (time / planet.speed) //% 360;
+        const radians = angle * (Math.PI / 180)
+        const x = (planet.distance + 100) * Math.cos(angle);
+        const y = (planet.distance ) * Math.sin(angle);
+        // ctx.rotate(time / planet.speed);
+        ctx.translate(x, y);
+        // ctx.rotate(-time / planet.speed);
         this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
 
         ctx.restore();
@@ -299,7 +314,7 @@ export default {
 		this.provider.cw = this.$refs['my-canvas'].width;
 		this.provider.ch = this.$refs['my-canvas'].height;
 
-      for (let i = 0; i < 100; i++){
+      for (let i = 0; i < 10; i++){
         this.planets.push({
           url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
           radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
