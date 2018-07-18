@@ -22,6 +22,7 @@ export default {
 			imagesLoad: [],
       images: [],
       planets: [],
+      stars: [],
 			time: 1,
 		};
 	},
@@ -134,7 +135,41 @@ export default {
 			ctx.fillText(text, x, y);
 			ctx.closePath();
 			//console.log(text);
-		},
+    },
+
+    star: function(star) {
+      if (!this.provider.context) return;
+      const ctx = this.provider.context;
+
+      // Change the opacity
+      if(star.opacity > 1) {
+        star.factor = -1;
+      }
+      else if(star.opacity <= 0) {
+        star.factor = 1;
+
+        star.x = Math.round(Math.random() * this.provider.cw);
+        star.y = Math.round(Math.random() * this.provider.ch);
+      }
+
+      star.opacity += star.increment * star.factor;
+
+      ctx.beginPath()
+      for (var i = 5; i--;) {
+        ctx.lineTo(0, star.length);
+        ctx.translate(0, star.length);
+        ctx.rotate((Math.PI * 2 / 10));
+        ctx.lineTo(0, - star.length);
+        ctx.translate(0, - star.length);
+        ctx.rotate(-(Math.PI * 6 / 10));
+      }
+      ctx.lineTo(0, star.length);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(255, 255, 200, " + star.opacity + ")";
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#ffff33';
+      ctx.fill();
+    },
 
 		animate: function() {
 			if (!this.provider.context) return;
@@ -147,13 +182,21 @@ export default {
 			ctx.beginPath();
 			ctx.fillStyle = 'black';
 			ctx.fillRect(0, 0, cw, ch);
-			ctx.closePath();
+      ctx.closePath();
+
+      // Stars
+      for (let star of this.stars) {
+        ctx.save();
+        ctx.translate(star.x,star.y);
+        this.star(star);
+        ctx.restore();
+      }
 
 			//Sun - center
 			ctx.translate(cw / 2, ch / 2);
-			this.image(this.$refs['sun'], 50, 'yellow', 0, 0);
+			this.image(this.$refs['sun'], 100, 'yellow', 0, 0);
 
-			this.text('Sun', 'black', '15pt arial', -16, 7);
+			//this.text('Sun', 'black', '15pt arial', -16, 7);
 
 
       /*for (let planet of this.planets){
@@ -314,15 +357,32 @@ export default {
 		this.provider.cw = this.$refs['my-canvas'].width;
 		this.provider.ch = this.$refs['my-canvas'].height;
 
-      for (let i = 0; i < 10; i++){
-        this.planets.push({
-          url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
-          radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-          distance: 10 + Math.random() * 400,
-          speed: (1 + Math.random() * 200)
-        });
+    const numPlanets = 10;
+    for (let i = 0; i < numPlanets; i++){
+      this.planets.push({
+        url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
+        radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
+        distance: 10 + Math.random() * 400,
+        speed: (1 + Math.random() * 200)
+      });
 
-      }
+    }
+
+    // Create all the stars
+    const numStars = 200;
+    for(let i = 0; i < numStars; i++) {
+      const x = Math.round(Math.random() * this.provider.cw);
+      const y = Math.round(Math.random() * this.provider.ch);
+      const length = 1 + Math.random() * 2;
+      const opacity = Math.random();
+
+      // Create a new star and draw
+      const star = {x, y, length, opacity, factor: 1, increment: Math.random() * 0.03};
+
+      // Add the the stars array
+      this.stars.push(star);
+    }
+
 
 
 		this.animate();
