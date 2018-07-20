@@ -19,10 +19,14 @@ export default {
 				// This is the CanvasRenderingContext that children will draw to.
 				context: null,
 			},
+			dataWithPlanets: {
+				planets:[]
+			},
 			imagesLoad: [],
       images: [],
       planets: [],
-      stars: [],
+			stars: [],
+			worker: null,
 			time: 1,
 		};
 	},
@@ -210,16 +214,15 @@ export default {
         ctx.restore();
       }*/
 
-      for (let planet of this.planets){
+			const planets = this.dataWithPlanets.planets.slice();
+      for (let planet of planets){
         //JF
         ctx.save();
-        const angle = (time / planet.speed) //% 360;
-        const radians = angle * (Math.PI / 180)
-        const x = (planet.distance + 100) * Math.cos(angle);
-        const y = (planet.distance ) * Math.sin(angle);
-        // ctx.rotate(time / planet.speed);
-        ctx.translate(x, y);
-        // ctx.rotate(-time / planet.speed);
+        // const angle = (time / planet.speed) //% 360;
+        // const radians = angle * (Math.PI / 180)
+        // const x = (planet.distance + 100) * Math.cos(angle);
+        // const y = (planet.distance ) * Math.sin(angle);
+        ctx.translate(planet.x, planet.y);
         this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
 
         ctx.restore();
@@ -239,92 +242,7 @@ export default {
 			//Venus white line
 			ctx.translate(-40, 0); //reset translate
 			this.circleStroke(60, '#1c1c1c', 0, 0, '1');
-
-			//Venus
-			ctx.rotate(time / 100 - time / 90);
-			 ctx.translate(60, 0);
-			this.circle(9, '#b9955b', 0, 0);
-
-			this.line(-60, 0, 0, 0);
-
-			//Earth white line
-			ctx.translate(-60, 0);
-			this.circleStroke(90, '#1c1c1c', 0, 0, '2');
-
-			//Earth -   This is Where i live
-			ctx.rotate(time / 100 - time / 80);
-			ctx.translate(90, 0);
-			this.circle(10, '#2f2fc1', 0, 0);
-
-			this.line(-90, 0, 0, 0);
-
-			//Moon.. nobody likes the moon anyway :P
-			//  ctx.rotate(time/120);
-			//  ctx.translate(20,0);
-			//   circle(4,"white",0,0);
-
-			//Mars white line
-			ctx.translate(-90, 0);
-			this.circleStroke(120, '#1c1c1c', 0, 0, '2');
-
-			//Mars
-			ctx.rotate(time / 120 - time / 50);
-			ctx.translate(120, 0);
-			this.circle(15, '#9f5e13', 0, 0);
-
-			this.line(-120, 0, 0, 0);
-
-			//asteroid belt
-			ctx.translate(-120, 0);
-			this.circleStroke(160, '#151515', 0, 0, '35');
-
-			//jupiter white line
-			ctx.translate(0, 0);
-			this.circleStroke(220, '#1c1c1c', 0, 0, '2');
-
-			//jupiter
-			ctx.rotate(time / 120 - time / 50);
-			ctx.translate(220, 0);
-			this.circle(45, '#ef602c', 0, 0);
-
-			this.line(-220, 0, 0, 0);
-
-			//saturn white line
-			ctx.translate(-220, 0);
-			this.circleStroke(300, '#1c1c1c', 0, 0, '2');
-
-			//saturn
-			ctx.rotate(time / 120 - time / 90);
-			ctx.translate(300, 0);
-			this.circle(35, '#c76743', 0, 0);
-
-			this.line(-300, 0, 0, 0);
-
-			//saturn asteroid belt
-			ctx.translate(0, 0);
-			this.circleStroke(50, '#747474', 0, 0, '3');
-
-			//uranus white line
-			ctx.translate(-300, 0);
-			this.circleStroke(340, '#1c1c1c', 0, 0, '2');
-
-			//uranus
-			ctx.rotate(time / 120 - time / 90);
-			ctx.translate(-340, 0);
-			this.circle(23, '#b843c7', 0, 0);
-
-			this.line(340, 0, 0, 0);
-
-			//neptune white line
-			ctx.translate(340, 0);
-			this.circleStroke(380, '#1c1c1c', 0, 0, '2');
-
-			//neptune
-			ctx.rotate(time / 120 - time / 140);
-			ctx.translate(-380, 0);
-			this.circle(20, '#43aec7', 0, 0);
-
-			this.line(380, 0, 0, 0);*/
+			*/
 
 			ctx.restore();
 			this.time++;
@@ -357,16 +275,6 @@ export default {
 		this.provider.cw = this.$refs['my-canvas'].width;
 		this.provider.ch = this.$refs['my-canvas'].height;
 
-    const numPlanets = 10;
-    for (let i = 0; i < numPlanets; i++){
-      this.planets.push({
-        url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
-        radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-        distance: 10 + Math.random() * 400,
-        speed: (1 + Math.random() * 200)
-      });
-
-    }
 
     // Create all the stars
     const numStars = 200;
@@ -383,56 +291,29 @@ export default {
       this.stars.push(star);
     }
 
+		this.worker = new Worker('./computePositionsWorker.js');
+
+		setTimeout(() => {
+			this.worker.postMessage({
+				type: 'init'
+			});
+		}, 1000);
+
+		this.worker.onmessage = function(e) {
+			const data = e.data;
+			console.log('Worker from vue receive message', data);
+			switch(data.type){
+				case 'planets':
+				this.dataWithPlanets.planets.length = 0;
+				this.dataWithPlanets.planets.push(...data.data);
+				break;
+			}
+		}.bind(this);
 
 
 		this.animate();
 	},
-	/*render: function() {
-    // Since the parent canvas has to mount first, it's *possible* that the context may not be
-    // injected by the time this render function runs the first time.
-    if(!this.provider.context) return;
-    const ctx = this.provider.context;
 
-    // Keep a reference to the box used in the previous render call.
-    const oldBox = this.oldBox
-    // Calculate the new box. (Computed properties update on-demand.)
-    const newBox = this.calculatedBox
-
-    ctx.beginPath();
-    // Clear the old area from the previous render.
-    ctx.clearRect(oldBox.x, oldBox.y, oldBox.w, oldBox.h);
-    // Clear the area for the text.
-    ctx.clearRect(newBox.x, newBox.y - 42, newBox.w, 100);
-
-    // Draw the new rectangle.
-    ctx.rect(newBox.x, newBox.y, newBox.w, newBox.h);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-
-    // Draw the text
-    ctx.fillStyle = '#000'
-    ctx.font = '28px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(Math.floor(this.value), (newBox.x + (newBox.w / 2)), newBox.y - 14)
-  },
-  computed: {
-    calculatedBox () {
-      const ctx = this.provider.context
-
-      // Turn start / end percentages into x, y, width, height in pixels.
-      const calculated = {
-        x: percentWidthToPix(this.x1, ctx),
-        y: percentHeightToPix(this.y1, ctx),
-        w: percentWidthToPix(this.x2 - this.x1, ctx),
-        h: percentHeightToPix(this.y2 - this.y1, ctx)
-      }
-
-      // Yes yes, side-effects. This lets us cache the box dimensions of the previous render.
-      // before we re-calculate calculatedBox the next render.
-      this.oldBox = calculated
-      return calculated
-    }
-  },*/
 };
 </script>
 
