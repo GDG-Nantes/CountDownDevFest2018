@@ -68,30 +68,12 @@ export default {
       const img = this.images[path]
       ctx.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
       ctx.restore();
-			/*ctx.beginPath();
-			ctx.fillStyle = color;
-			ctx.arc(x, y, radius, 0, 2 * Math.PI, true); //true = clockwise, false = counterclock
-
-			ctx.fill();
-			ctx.closePath();*/
 		},
 		image: function(img, radius, color, x, y) {
 			if (!this.provider.context) return;
 
       const ctx = this.provider.context;
-     /*if (!this.images[path]) {
-        this.loadSprite({url: path, title: path})
-        return;
-      }
-
-      const img = this.image[path]*/
-      ctx.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
-			/*ctx.beginPath();
-			ctx.fillStyle = color;
-			ctx.arc(x, y, radius, 0, 2 * Math.PI, true); //true = clockwise, false = counterclock
-
-			ctx.fill();
-			ctx.closePath();*/
+       ctx.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
 		},
 		circle: function(radius, color, x, y) {
       if (!this.provider.context) return;
@@ -200,30 +182,12 @@ export default {
 			ctx.translate(cw / 2, ch / 2);
 			this.image(this.$refs['sun'], 100, 'yellow', 0, 0);
 
-			//this.text('Sun', 'black', '15pt arial', -16, 7);
-
-
-      /*for (let planet of this.planets){
-        //JF
-        ctx.save();
-        ctx.rotate(time / planet.speed);
-        ctx.translate(planet.distance, 0);
-        ctx.rotate(-time / planet.speed);
-        this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
-
-        ctx.restore();
-      }*/
-
 			const planets = this.dataWithPlanets.planets.slice();
       for (let planet of planets){
 				//JF
 				if (!planet.collision){
 
 					ctx.save();
-					// const angle = (time / planet.speed) //% 360;
-					// const radians = angle * (Math.PI / 180)
-					// const x = (planet.distance + 100) * Math.cos(angle);
-					// const y = (planet.distance ) * Math.sin(angle);
 					ctx.translate(planet.x, planet.y);
 					this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
 
