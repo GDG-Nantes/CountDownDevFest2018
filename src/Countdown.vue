@@ -216,16 +216,19 @@ export default {
 
 			const planets = this.dataWithPlanets.planets.slice();
       for (let planet of planets){
-        //JF
-        ctx.save();
-        // const angle = (time / planet.speed) //% 360;
-        // const radians = angle * (Math.PI / 180)
-        // const x = (planet.distance + 100) * Math.cos(angle);
-        // const y = (planet.distance ) * Math.sin(angle);
-        ctx.translate(planet.x, planet.y);
-        this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
+				//JF
+				if (!planet.collision){
 
-        ctx.restore();
+					ctx.save();
+					// const angle = (time / planet.speed) //% 360;
+					// const radians = angle * (Math.PI / 180)
+					// const x = (planet.distance + 100) * Math.cos(angle);
+					// const y = (planet.distance ) * Math.sin(angle);
+					ctx.translate(planet.x, planet.y);
+					this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
+
+					ctx.restore();
+				}
       }
 
 
