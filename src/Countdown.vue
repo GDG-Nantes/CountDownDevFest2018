@@ -300,6 +300,30 @@ export default {
 			this.worker.postMessage({
 				type: 'init'
 			});
+
+			const planetInterval = setInterval(() => {
+				const now = Date.now();
+				this.worker.postMessage({
+					type: 'addPlanet',
+					planet : {
+						  id: `id${now}`,
+							url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
+							radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
+							distance: 10 + Math.random() * 400,
+							collision: false,
+							iterations: 0,
+							speed: (1 + Math.random() * 200),
+							// Change datas
+							angle: 0,
+							x : 0,
+							y : 0
+					}
+				});
+				if (this.planets.length > 30){
+					clearInterval(planetInterval);
+				}
+
+			}, 5000);
 		}, 1000);
 
 		this.worker.onmessage = function(e) {

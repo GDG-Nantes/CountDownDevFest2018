@@ -107,6 +107,9 @@ onmessage = function(e) {
             postMessage({type: 'planets', data: planets});
             compute();
         break;
+        case 'addPlanet':
+            planets.push(data.planet);
+        break;
 
     }
 }
