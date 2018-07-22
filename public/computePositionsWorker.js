@@ -71,7 +71,17 @@ function movePlanets(){
         planet.y = (planet.distance ) * Math.sin(planet.angle);
         planet.iterations++;
     }
+}
 
+function increasePlanets() {
+    for (let planet of planets){
+        if (planet.collision)
+            continue;
+
+        if (planet.iterations % 1000 === 0){
+            planet.radius++;
+        }
+    }
 }
 
 function compute(){
@@ -80,6 +90,8 @@ function compute(){
     movePlanets();
 
     checkCollisions();
+
+    increasePlanets();
 
     postMessage({type: 'planets', data: planets});
 
