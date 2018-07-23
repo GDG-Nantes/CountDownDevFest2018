@@ -1,8 +1,10 @@
+import './firebase/config'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from './App.vue'
 import Countdown from './Countdown.vue'
 import Game from './Game.vue'
+
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)

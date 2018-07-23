@@ -1,0 +1,10 @@
+const config =  {
+    "apiKey": "----myApiKey----",
+    "authDomain": "countdowndevfest2018.firebaseapp.com",
+    "databaseURL": "https://countdowndevfest2018.firebaseio.com",
+    "projectId": "countdowndevfest2018",
+    "storageBucket": "countdowndevfest2018.appspot.com",
+    "messagingSenderId": "--mySenderId--"
+  }
+
+export default config;

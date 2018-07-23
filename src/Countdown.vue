@@ -8,6 +8,12 @@
 <script>
 // https://alligator.io/vuejs/vue-html5-canvas/
 
+import firebase from 'firebase/app'
+const firestore = firebase.firestore();
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+firestore.settings(settings);
+
+
 export default {
 	name: 'countdown',
 	components: {},
@@ -260,39 +266,36 @@ export default {
 
 		this.worker = new Worker('./computePositionsWorker.js');
 
+
+		firestore.collection("planets").where("init", "==", true)
+    	.onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+
+								this.worker.postMessage({
+									type: 'addPlanet',
+									planet : change.doc.data()
+								});
+                console.log("New planet: ", change.doc.data());
+            }
+            if (change.type === "modified") {
+                console.log("Modified planet: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+                console.log("Removed planet: ", change.doc.data());
+            }
+        });
+    });
+
 		setTimeout(() => {
 			this.worker.postMessage({
 				type: 'init'
 			});
-
-			const planetInterval = setInterval(() => {
-				const now = Date.now();
-				this.worker.postMessage({
-					type: 'addPlanet',
-					planet : {
-						  id: `id${now}`,
-							url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
-							radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-							distance: 10 + Math.random() * 400,
-							collision: false,
-							iterations: 0,
-							speed: (1 + Math.random() * 200),
-							// Change datas
-							angle: 0,
-							x : 0,
-							y : 0
-					}
-				});
-				if (this.planets.length > 30){
-					clearInterval(planetInterval);
-				}
-
-			}, 5000);
 		}, 1000);
 
 		this.worker.onmessage = function(e) {
 			const data = e.data;
-			console.log('Worker from vue receive message', data);
+			// console.log('Worker from vue receive message', data);
 			switch(data.type){
 				case 'planets':
 				this.dataWithPlanets.planets.length = 0;

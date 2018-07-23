@@ -100,7 +100,7 @@ function compute(){
 }
 
 onmessage = function(e) {
-    console.log('From Worker', e.data);
+    //console.log('From Worker', e.data);
     const data = e.data;
     switch(data.type){
         case 'init':
