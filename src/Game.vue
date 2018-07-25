@@ -30,10 +30,10 @@ export default {
           iterations: 0,
           speed: (1 + Math.random() * 200),
           // Change datas
+          score: 0,
           angle: 0,
           x : 0,
           y : 0,
-          score: 0,
           init: true
       })
       .then(function(docRef) {

@@ -1,4 +1,8 @@
 const numPlanets = 10;
+const TIME_BEFORE_COLLISION_DETECTION = 500;
+const TIME_BEFORE_PLANET_GROW = 1000;
+const MINIMUM_DISTANCE = 100;
+const MAXIMUM_DISTANCE = 500;
 const planets = [];
 for (let i = 0; i < numPlanets; i++){
     planets.push({
@@ -42,8 +46,12 @@ function checkCollisions() {
         for (let j = 0; j < planets.length; j++) {
             const planetI = planets[i];
             const planetJ = planets[j];
-            if (planetI.iterations < 500 ||
-                planetJ.iterations < 500 ||
+            if (planetI.iterations < TIME_BEFORE_COLLISION_DETECTION ||
+                planetJ.iterations < TIME_BEFORE_COLLISION_DETECTION ||
+                (planetI.iterations < 2 * TIME_BEFORE_COLLISION_DETECTION
+                    && planetI.distance < MINIMUM_DISTANCE) ||
+                (planetJ.iterations < 2 * TIME_BEFORE_COLLISION_DETECTION
+                    && planetJ.distance < MINIMUM_DISTANCE) ||
                 planetI.collision ||
                 planetJ.collision ||
                 planetI.id === planetJ.id)
@@ -57,8 +65,8 @@ function checkCollisions() {
                 planetJ.y,
                 planetJ.radius
             );
-            planetI.collision = planetI.collision || collisionDetected;
-            planetJ.collision = planetJ.collision || collisionDetected;
+            planetI.collision = planetI.collision || collisionDetected || planetI.distance < MINIMUM_DISTANCE;
+            planetJ.collision = planetJ.collision || collisionDetected || planetJ.distance < MINIMUM_DISTANCE;
 
 
         }
@@ -68,8 +76,16 @@ function checkCollisions() {
 function movePlanets(){
     for (let planet of planets){
         planet.angle = (time / planet.speed) //% 360;
-        planet.x = (planet.distance + 100) * Math.cos(planet.angle);
-        planet.y = (planet.distance ) * Math.sin(planet.angle);
+        let distanceToUse = planet.distance;
+        if (planet.iterations < TIME_BEFORE_COLLISION_DETECTION){
+            distanceToUse = (planet.iterations / TIME_BEFORE_COLLISION_DETECTION) * planet.distance;
+        }else if (planet.distance < MINIMUM_DISTANCE){
+            const iterations = planet.iterations - TIME_BEFORE_COLLISION_DETECTION;
+            const percentIteration = iterations / TIME_BEFORE_COLLISION_DETECTION;
+            distanceToUse = planet.distance - (percentIteration * planet.distance);
+        }
+        planet.x = (distanceToUse + 100) * Math.cos(planet.angle);
+        planet.y = (distanceToUse ) * Math.sin(planet.angle);
         planet.iterations++;
     }
 }
@@ -80,7 +96,7 @@ function increasePlanets() {
             continue;
 
         planet.score++;
-        if (planet.iterations % 1000 === 0){
+        if (planet.iterations % TIME_BEFORE_PLANET_GROW === 0){
             planet.radius++;
         }
     }
