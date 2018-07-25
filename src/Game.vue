@@ -33,6 +33,7 @@ export default {
           angle: 0,
           x : 0,
           y : 0,
+          score: 0,
           init: true
       })
       .then(function(docRef) {

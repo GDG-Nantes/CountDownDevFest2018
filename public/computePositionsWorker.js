@@ -11,6 +11,7 @@ for (let i = 0; i < numPlanets; i++){
     speed: (1 + Math.random() * 200),
     // Change datas
     angle: 0,
+    score: 0,
     x : 0,
     y : 0
     });
@@ -78,10 +79,17 @@ function increasePlanets() {
         if (planet.collision)
             continue;
 
+        planet.score++;
         if (planet.iterations % 1000 === 0){
             planet.radius++;
         }
     }
+}
+
+function reorder(planetsToSort) {
+    if (!planetsToSort)
+        return []
+    return planetsToSort.sort((planetA, planetB) => planetB.score - planetA.score);
 }
 
 function compute(){
@@ -93,7 +101,9 @@ function compute(){
 
     increasePlanets();
 
-    postMessage({type: 'planets', data: planets});
+    reorder();
+
+    postMessage({type: 'planets', data: reorder(planets)});
 
     time++;
     setTimeout(compute,0);

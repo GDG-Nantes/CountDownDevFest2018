@@ -2,12 +2,14 @@
   <div id="canvas-container">
     <canvas ref="my-canvas"></canvas>
     <img src="./assets/sun.png" ref="sun" style="display:none">
+		<Score v-bind:planets="dataWithPlanets.planets"></Score>
   </div>
 </template>
 
 <script>
 // https://alligator.io/vuejs/vue-html5-canvas/
 
+import Score from './components/Score.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -16,7 +18,7 @@ firestore.settings(settings);
 
 export default {
 	name: 'countdown',
-	components: {},
+	components: {Score},
 	data() {
 		return {
 			// By creating the provider in the data property, it becomes reactive,
@@ -318,11 +320,29 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
-	margin-top: 60px;
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	top: 0;
+	left: 0;
 	height: 100%;
+	width: 100%;
+	overflow: hidden;
 }
 
 canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+Score {
+	position: absolute;
+	width: 200px;
+	top: 0;
+	right: 0;
 	height: 100%;
 }
 </style>
