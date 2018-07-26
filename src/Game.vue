@@ -28,7 +28,7 @@ export default {
           distance: 10 + Math.random() * 400,
           collision: false,
           iterations: 0,
-          speed: (1 + Math.random() * 200),
+          speed: (300 + Math.random() * 100),
           // Change datas
           score: 0,
           angle: 0,
@@ -54,6 +54,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin:0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

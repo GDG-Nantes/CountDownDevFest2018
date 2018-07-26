@@ -1,5 +1,5 @@
 const numPlanets = 10;
-const TIME_BEFORE_COLLISION_DETECTION = 500;
+const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const TIME_BEFORE_PLANET_GROW = 1000;
 const MINIMUM_DISTANCE = 100;
 const MAXIMUM_DISTANCE = 500;
@@ -12,7 +12,7 @@ for (let i = 0; i < numPlanets; i++){
     distance: 10 + Math.random() * 400,
     collision: false,
     iterations: 0,
-    speed: (1 + Math.random() * 200),
+    speed: (300 + Math.random() * 100),
     // Change datas
     angle: 0,
     score: 0,

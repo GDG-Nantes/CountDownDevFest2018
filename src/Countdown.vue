@@ -2,7 +2,7 @@
   <div id="canvas-container">
     <canvas ref="my-canvas"></canvas>
     <img src="./assets/sun.png" ref="sun" style="display:none">
-		<Score v-bind:planets="dataWithPlanets.planets"></Score>
+		<!--<Score v-bind:planets="dataWithPlanets.planets"></Score>-->
   </div>
 </template>
 
@@ -336,6 +336,8 @@ canvas {
 	left: 0;
 	height: 100%;
 	width: 100%;
+	margin: 0;
+	padding: 0;
 }
 
 Score {
