@@ -2,7 +2,7 @@
   <div id="canvas-container">
     <canvas ref="my-canvas"></canvas>
     <img src="./assets/sun.png" ref="sun" style="display:none">
-		<!--<Score v-bind:planets="dataWithPlanets.planets"></Score>-->
+		<Score v-bind:planets="scores"></Score>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ export default {
 				// This is the CanvasRenderingContext that children will draw to.
 				context: null,
 			},
+			scores : [],
 			dataWithPlanets: {
 				planets:[]
 			},
@@ -302,6 +303,7 @@ export default {
 				case 'planets':
 				this.dataWithPlanets.planets.length = 0;
 				this.dataWithPlanets.planets.push(...data.data);
+				this.scores = this.dataWithPlanets.planets.slice(0,10);
 				break;
 			}
 		}.bind(this);
