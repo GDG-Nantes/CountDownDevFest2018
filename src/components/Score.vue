@@ -4,10 +4,6 @@
           <img v-bind:src="planets[0].url">
           <div> score : {{planets[0].score}}</div>
       </div>
-      <div class="planet" v-if="planets.length > 0">
-          <img v-bind:src="planets[0].url">
-          <div> score : {{planets[0].score}}</div>
-      </div>
       <div class="planet" v-if="planets.length > 1">
           <img v-bind:src="planets[1].url">
           <div> score : {{planets[1].score}}</div>
