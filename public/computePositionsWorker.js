@@ -54,19 +54,37 @@ function checkCollisions() {
                     && planetJ.distance < MINIMUM_DISTANCE) ||
                 planetI.collision ||
                 planetJ.collision ||
-                planetI.id === planetJ.id)
+                planetI.id === planetJ.id){
                 continue;
+            }
 
             const collisionDetected = collision(
                 planetI.x,
                 planetI.y,
-                planetI.radius,
+                planetI.radius / 2,
                 planetJ.x,
                 planetJ.y,
-                planetJ.radius
+                planetJ.radius / 2
             );
-            planetI.collision = planetI.collision || collisionDetected || planetI.distance < MINIMUM_DISTANCE;
-            planetJ.collision = planetJ.collision || collisionDetected || planetJ.distance < MINIMUM_DISTANCE;
+            const collisionIWithSun = collision(
+                planetI.x,
+                planetI.y,
+                planetI.radius / 2,
+                0,
+                0,
+                100
+            );
+            const collisionJWithSun = collision(
+                planetJ.x,
+                planetJ.y,
+                planetJ.radius / 2,
+                0,
+                0,
+                100
+            );
+
+            planetI.collision = planetI.collision || collisionDetected || planetI.distance < MINIMUM_DISTANCE || collisionIWithSun;
+            planetJ.collision = planetJ.collision || collisionDetected || planetJ.distance < MINIMUM_DISTANCE || collisionJWithSun;
 
 
         }
