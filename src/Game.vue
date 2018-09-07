@@ -23,6 +23,7 @@ export default {
       const now = Date.now();
       firestore.collection("planets").add({
           id: `id${now}`,
+          name: `name${i}`,
           url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
           radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
           distance: 10 + Math.random() * 400,
