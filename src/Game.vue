@@ -1,7 +1,14 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <img src="./assets/logo.png"
+    >
     <button v-on:click="addPlanet">Add Planet</button>
+    <canvas ref="arrow-canvas"
+      v-on:touchstart="onMouseDown"
+      v-on:touchend="onMouseUp"
+      v-on:touchmove="onMouseMove"
+      v-on:touchover="onMouseOver"
+      ></canvas>
   </div>
 </template>
 
@@ -18,6 +25,37 @@ export default {
   name: 'app',
   components: {
   },
+  data() {
+		return {
+			// By creating the provider in the data property, it becomes reactive,
+			// so child components will update when `context` changes.
+			provider: {
+				// This is the CanvasRenderingContext that children will draw to.
+				context: null,
+        touch: false,
+			}
+		};
+	},
+  mounted() {
+      // We can't access the rendering context until the canvas is mounted to the DOM.
+      // Once we have it, provide it to all child components.
+      this.provider.canvas = this.$refs['arrow-canvas'];
+      this.provider.context = this.$refs['arrow-canvas'].getContext('2d');
+      // Resize the canvas to fit its parent's width.
+      // Normally you'd use a more flexible resize system.
+      /*this.$refs['arrow-canvas'].width = this.$refs[
+        'arrow-canvas'
+      ].parentElement.clientWidth;*/
+      this.provider.leftMargin = this.$refs['arrow-canvas'].getBoundingClientRect().left;
+      console.log(this.$refs['arrow-canvas'].getBoundingClientRect())
+      this.$refs['arrow-canvas'].width = this.$refs[
+        'arrow-canvas'
+      ].getBoundingClientRect().width;
+      this.$refs['arrow-canvas'].height = this.$refs[
+        'arrow-canvas'
+      ].parentElement.clientHeight;
+
+    },
   methods:{
     addPlanet: function() {
       const now = Date.now();
@@ -43,6 +81,74 @@ export default {
       .catch(function(error) {
           console.error("Error adding document: ", error);
       });
+    },
+    onMouseDown: function(event) {
+      this.provider.touch = true;
+      console.log('onMouseDown',event);
+    },
+    onMouseUp: function(event) {
+      this.provider.touch = false;
+      console.log('onMouseUp',event);
+    },
+    onMouseMove: function(event) {
+      if (this.provider.touch){
+        const clientX = event.touches[0].clientX;
+        const clientY = event.touches[0].clientY;
+        const percentArrow = 1 - ((this.provider.canvas.width - clientX + this.provider.leftMargin) / this.provider.canvas.width);
+        console.log(percentArrow)
+        this.drawArrow(this.provider.context,
+            this.provider.canvas,
+            0, // From X
+            this.provider.canvas.height / 2, // From Y
+            clientX - this.provider.leftMargin, // To X
+            clientY, // To Y
+            30 * percentArrow, // Width Arrow
+            'red' // Color
+            );
+      }
+      console.log(`onMouseMove ${event.touches[0].clientX}`,event);
+    },
+    onMouseOver: function(event) {
+      console.log('onMouseOver',event);
+    },
+    drawArrow: function(ctx, canvas, fromx, fromy, tox, toy, arrowWidth, color){
+      //variables to be used when creating the arrow
+      var headlen = 10;
+      var angle = Math.atan2(toy-fromy,tox-fromx);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+
+      //starting path of the arrow from the start square to the end square
+      //and drawing the stroke
+      ctx.beginPath();
+      ctx.moveTo(fromx, fromy);
+      ctx.lineTo(tox, toy);
+      ctx.lineWidth = arrowWidth;
+      ctx.stroke();
+
+      //starting a new path from the head of the arrow to one of the sides of
+      //the point
+      ctx.beginPath();
+      ctx.moveTo(tox, toy);
+      ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),
+                toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //path from the side point of the arrow, to the other side point
+      ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/7),
+                toy-headlen*Math.sin(angle+Math.PI/7));
+
+      //path from the side point back to the tip of the arrow, and then
+      //again to the opposite side point
+      ctx.lineTo(tox, toy);
+      ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),
+                toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //draws the paths created above
+      ctx.stroke();
+      ctx.restore();
     }
   }
 }
@@ -62,5 +168,11 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: row;
 }
+canvas{
+  flex:1;
+}
+
 </style>

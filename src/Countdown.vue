@@ -332,7 +332,7 @@ export default {
 	overflow: hidden;
 }
 
-canvas {
+#canvas-container canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
