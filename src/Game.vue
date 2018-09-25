@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png"
+    <img v-bind:src="user.imageUrl"
     >
-    <button v-on:click="addPlanet">Add Planet</button>
     <canvas ref="arrow-canvas"
       v-on:touchstart="onMouseDown"
       v-on:touchend="onMouseUp"
@@ -41,7 +40,12 @@ export default {
           angle: 0
         },
         idUser: null
-			}
+      },
+      user: {
+        imageUrl : '',
+        id :0,
+        name: ''
+      }
 		};
 	},
   mounted() {
@@ -65,49 +69,21 @@ export default {
 
       this.drawState();
 
+      const user = firebase.auth().currentUser;
+      this.user.imageUrl = user.photoURL;
+      this.user.id = user.id;
+      this.user.name = user.displayName;
+
     },
   methods:{
     addPlanet: function() {
-      const now = Date.now();
-      firestore.collection("planets").add({
-          id: `id${now}`,
-          name: `name${i}`,
-          url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
-          radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-          distance: 10 + Math.random() * 400,
-          collision: false,
-          iterations: 0,
-          speed: (300 + Math.random() * 100),
-          // Change datas
-          score: 0,
-          angle: 0,
-          x : 0,
-          y : 0,
-          init: true
-      })
-      .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-          console.error("Error adding document: ", error);
-      });
-    },
-    onMouseDown: function(event) {
-      this.provider.touch = true;
-      console.log('onMouseDown',event);
-    },
-    onMouseUp: function(event) {
-      this.provider.touch = false;
-      console.log('onMouseUp',event);
-      this.provider.stateMouse.draw = false;
-      this.provider.context.clearRect(0,0,this.provider.canvas.width, this.provider.canvas.height);
-      const now = Date.now();
       if (!this.provider.idUser){
-        this.provider.idUser = `id${now}`;
+        const now = Date.now();
+        this.provider.idUser = this.user.id;
         firestore.collection("planets").add({
-            id: `id${now}`,
-            name: `name${now}`,
-            url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
+            id: this.user.userId,
+            name: this.user.name,
+            url: this.user.userImageUrl,
             radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
             distance: 10 + this.provider.stateMouse.power * 400,
             collision: false,
@@ -127,6 +103,17 @@ export default {
             console.error("Error adding document: ", error);
         });
       }
+    },
+    onMouseDown: function(event) {
+      this.provider.touch = true;
+      console.log('onMouseDown',event);
+    },
+    onMouseUp: function(event) {
+      this.provider.touch = false;
+      console.log('onMouseUp',event);
+      this.provider.stateMouse.draw = false;
+      this.provider.context.clearRect(0,0,this.provider.canvas.width, this.provider.canvas.height);
+      this.addPlanet();
     },
     onMouseMove: function(event) {
       if (this.provider.touch){

@@ -26,6 +26,7 @@
   "homepage": "https://github.com/GDG-Nantes/CountDownDevFest2018#readme",
   "dependencies": {
     "firebase": "^5.3.0",
+    "firebaseui": "^3.4.1",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1"
   },
