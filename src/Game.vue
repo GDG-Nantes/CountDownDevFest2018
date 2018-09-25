@@ -244,4 +244,9 @@ canvas{
   flex:1;
 }
 
+html,
+body {
+    overscroll-behavior-y: contain;
+}
+
 </style>
