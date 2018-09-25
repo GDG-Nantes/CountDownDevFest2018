@@ -12,6 +12,7 @@
 import Score from './components/Score.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
+const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 firestore.settings(settings);
 
@@ -57,7 +58,7 @@ export default {
 			});
 		},
 
-		imageFromUrl: function(path, radius, color, x, y) {
+		imageFromUrl: function(path, radius, color, x, y, alpha) {
 			if (!this.provider.context) return;
 
       const ctx = this.provider.context;
@@ -74,7 +75,8 @@ export default {
 			ctx.closePath()
       ctx.clip()
 
-      const img = this.images[path]
+			const img = this.images[path];
+			ctx.globalAlpha = alpha;
       ctx.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
       ctx.restore();
 		},
@@ -151,7 +153,13 @@ export default {
 
 					ctx.save();
 					ctx.translate(planet.x, planet.y);
-					this.imageFromUrl(planet.url, planet.radius, '#898989', 0, 0);
+					this.imageFromUrl(planet.url, // Url of avatar image
+						planet.radius, // Size of planet
+						'#898989', // Border color
+						0, // Clip x start position
+						0, // Clip y start position
+						planet.iterations < TIME_BEFORE_COLLISION_DETECTION ? 0.4 : 1 // Alpha planet
+						 );
 
 					ctx.restore();
 				}
