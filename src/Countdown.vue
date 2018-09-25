@@ -84,53 +84,6 @@ export default {
       const ctx = this.provider.context;
        ctx.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
 		},
-		circle: function(radius, color, x, y) {
-      if (!this.provider.context) return;
-
-			const ctx = this.provider.context;
-			ctx.beginPath();
-			ctx.fillStyle = color;
-			ctx.arc(x, y, radius, 0, 2 * Math.PI, true); //true = clockwise, false = counterclock
-
-			ctx.fill();
-			ctx.closePath();
-		},
-
-		circleStroke: function(radius, strokeColor, x, y, lineWidth) {
-			if (!this.provider.context) return;
-			const ctx = this.provider.context;
-
-			ctx.beginPath();
-			ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
-			ctx.lineWidth = lineWidth;
-			ctx.strokeStyle = strokeColor;
-			ctx.stroke();
-			ctx.closePath();
-		},
-
-		line: function(ax, ay, bx, by) {
-			if (!this.provider.context) return;
-			const ctx = this.provider.context;
-
-			ctx.beginPath();
-			ctx.moveTo(ax * 2, ay);
-			ctx.lineTo(bx, by);
-			ctx.strokeStyle = 'rgba(255, 255, 255,0.12)';
-			ctx.stroke();
-			ctx.closePath();
-		},
-
-		text: function(text, color, font, x, y) {
-			if (!this.provider.context) return;
-			const ctx = this.provider.context;
-
-			ctx.beginPath();
-			ctx.font = font;
-			ctx.fillStyle = color;
-			ctx.fillText(text, x, y);
-			ctx.closePath();
-			//console.log(text);
-    },
 
     star: function(star) {
       if (!this.provider.context) return;
@@ -203,23 +156,6 @@ export default {
 					ctx.restore();
 				}
       }
-
-
-      /*//Mercury white line
-			this.circleStroke(40, '#1c1c1c', 0, 0, '1');
-
-      //Mercury
-			ctx.rotate(time / 30);
-			ctx.translate(40, 0);
-			this.circle(3.8, '#898989', 0, 0);
-
-			this.line(-40, 0, 0, 0);
-
-			//Venus white line
-			ctx.translate(-40, 0); //reset translate
-			this.circleStroke(60, '#1c1c1c', 0, 0, '1');
-			*/
-
 			ctx.restore();
 			this.time++;
 			//  console.log(time);
