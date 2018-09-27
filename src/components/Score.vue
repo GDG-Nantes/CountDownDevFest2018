@@ -80,7 +80,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-img{
+.score img{
     width: 50px;
 }
 </style>

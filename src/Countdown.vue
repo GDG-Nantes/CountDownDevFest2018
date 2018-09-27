@@ -220,7 +220,7 @@ export default {
             if (change.type === "added") {
 
 								this.worker.postMessage({
-									type: 'addPlanet',
+									type: 'addOrUpdatePlanet',
 									planet : change.doc.data()
 								});
                 console.log("New planet: ", change.doc.data());
@@ -247,6 +247,21 @@ export default {
 				case 'planets':
 				this.dataWithPlanets.planets.length = 0;
 				this.dataWithPlanets.planets.push(...data.data);
+				data.data.forEach(planet => {
+					if (planet.init && planet.collision){
+						console.log('Will Notify destruction of planet : ', planet);
+						// We have to set to !init the planet
+						planet = { ...planet, ...{
+							init: false,
+							collision: false,
+							iterations: 0,
+							angle: 0,
+							x: 0,
+							y: 0
+						}};
+						firestore.collection("planets").doc(`${planet.id}`).set(planet);
+					}
+				})
 				this.scores = this.dataWithPlanets.planets.slice(0,10);
 				break;
 			}

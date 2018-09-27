@@ -14,6 +14,7 @@ for (let i = 0; i < numPlanets; i++){
     collision: false,
     iterations: 0,
     speed: (300 + Math.random() * 100),
+    init: true,
     // Change datas
     angle: 0,
     score: 0,
@@ -53,6 +54,8 @@ function checkCollisions() {
                     && planetI.distance < MINIMUM_DISTANCE) ||
                 (planetJ.iterations < 2 * TIME_BEFORE_COLLISION_DETECTION
                     && planetJ.distance < MINIMUM_DISTANCE) ||
+                !planetI.init ||
+                !planetJ.init ||
                 planetI.collision ||
                 planetJ.collision ||
                 planetI.id === planetJ.id){
@@ -94,6 +97,9 @@ function checkCollisions() {
 
 function movePlanets(){
     for (let planet of planets){
+        if (planet.collision || !planet.init){
+            continue;
+        }
         planet.angle = (time / planet.speed) //% 360;
         let distanceToUse = planet.distance;
         if (planet.iterations < TIME_BEFORE_COLLISION_DETECTION){
@@ -111,7 +117,7 @@ function movePlanets(){
 
 function increasePlanets() {
     for (let planet of planets){
-        if (planet.collision)
+        if (planet.collision || !planet.init)
             continue;
 
         planet.score++;
@@ -136,9 +142,11 @@ function compute(){
 
     increasePlanets();
 
-    reorder();
-
     postMessage({type: 'planets', data: reorder(planets)});
+
+    planets.forEach(planet => {
+        planet.init = !planet.collision;
+    })
 
     time++;
     setTimeout(compute,0);
@@ -152,8 +160,16 @@ onmessage = function(e) {
             postMessage({type: 'planets', data: planets});
             compute();
         break;
-        case 'addPlanet':
-            planets.push(data.planet);
+        case 'addOrUpdatePlanet':
+            const indexPlanetToUpdate = planets.findIndex(tempPlanet => tempPlanet.id === data.planet.id);
+            if (indexPlanetToUpdate !== -1){
+                console.log('Planet Update ');
+                const planetToUpdate = planets[indexPlanetToUpdate];
+                planets[indexPlanetToUpdate] = { ...planetToUpdate, ...data.planet };
+                // Will update values of planet
+            } else {
+                planets.push(data.planet);
+            }
         break;
 
     }

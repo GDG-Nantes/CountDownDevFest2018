@@ -2,6 +2,8 @@
   <div id="game">
     <img v-bind:src="user.imageUrl"
     >
+    <i id="iconBomb" v-if="provider.idUser" class="fas fa-bomb"></i>
+
     <canvas id="arrow" ref="arrow-canvas"
       v-on:touchstart="onMouseDown"
       v-on:touchend="onMouseUp"
@@ -14,7 +16,6 @@
 <script>
 
 import firebase from 'firebase/app'
-
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 firestore.settings(settings);
@@ -77,6 +78,22 @@ export default {
       this.user.imageUrl = user.photoURL;
       this.user.id = user.uid;
       this.user.name = user.displayName;
+
+      firestore.collection("planets").where("init", "==", false).where("id", "==", this.user.id)
+    	.onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              this.provider.idUser = null;
+							  console.log("New planet: ", change.doc.data());
+            }
+            if (change.type === "modified") {
+                console.log("Modified planet: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+                console.log("Removed planet: ", change.doc.data());
+            }
+        });
+    });
 
     },
   methods:{
@@ -230,10 +247,17 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
+  background: black;
 }
 #game canvas#arrow{
   flex:1;
   z-index: 2;
+}
+
+#game #iconBomb{
+  position: absolute;
+  left: 50px;
+  top: calc(50% - 50px);
 }
 
 #game img{
@@ -241,6 +265,8 @@ export default {
   height: 100px;
   left: 50px;
   top: calc(50% - 50px);
+  -webkit-clip-path: circle(50px at center);
+  clip-path: circle(50px at center);
 }
 html,
 body {
