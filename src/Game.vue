@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
+  <div id="game">
     <img v-bind:src="user.imageUrl"
     >
-    <canvas ref="arrow-canvas"
+    <canvas id="arrow" ref="arrow-canvas"
       v-on:touchstart="onMouseDown"
       v-on:touchend="onMouseUp"
       v-on:touchmove="onMouseMove"
@@ -70,8 +70,12 @@ export default {
       this.drawState();
 
       const user = firebase.auth().currentUser;
+      if (!user){
+        console.log('No User :\'(');
+        return;
+      }
       this.user.imageUrl = user.photoURL;
-      this.user.id = user.id;
+      this.user.id = user.uid;
       this.user.name = user.displayName;
 
     },
@@ -80,10 +84,10 @@ export default {
       if (!this.provider.idUser){
         const now = Date.now();
         this.provider.idUser = this.user.id;
-        firestore.collection("planets").add({
-            id: this.user.userId,
+        firestore.collection("planets").doc(`${this.user.id}`).set({
+            id: this.user.id,
             name: this.user.name,
-            url: this.user.userImageUrl,
+            url: this.user.imageUrl,
             radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
             distance: 10 + this.provider.stateMouse.power * 400,
             collision: false,
@@ -96,10 +100,10 @@ export default {
             y : 0,
             init: true
         })
-        .then(function(docRef) {
-            console.log("Document written with ID: ", docRef.id);
+        .then((docRef) => {
+            console.log("Document written with ID: ", this.provider.idUser);
         })
-        .catch(function(error) {
+        .catch((error) => {
             console.error("Error adding document: ", error);
         });
       }
@@ -186,7 +190,7 @@ export default {
       ctx.restore();
     },
     calculateUserLaunch: function(mouseEvent){
-        const originX = 0;
+        const originX = 75;
         const originY = this.provider.canvas.height / 2;
         const clientX = mouseEvent.touches[0].clientX;
         const clientY = mouseEvent.touches[0].clientY;
@@ -211,7 +215,7 @@ export default {
 </script>
 
 <style>
-#app {
+#game {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -227,10 +231,17 @@ export default {
   display: flex;
   flex-direction: row;
 }
-canvas{
+#game canvas#arrow{
   flex:1;
+  z-index: 2;
 }
 
+#game img{
+  position: absolute;
+  height: 100px;
+  left: 50px;
+  top: calc(50% - 50px);
+}
 html,
 body {
     overscroll-behavior-y: contain;
