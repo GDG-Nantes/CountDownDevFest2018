@@ -229,6 +229,10 @@ export default {
                 console.log("Modified planet: ", change.doc.data());
             }
             if (change.type === "removed") {
+								this.worker.postMessage({
+									type: 'removePlanet',
+									planet: change.doc.data()
+								});
                 console.log("Removed planet: ", change.doc.data());
             }
         });

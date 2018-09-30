@@ -171,6 +171,16 @@ onmessage = function(e) {
                 planets.push(data.planet);
             }
         break;
+        case 'removePlanet':
+            const indexPlanetToRemove = planets.findIndex(tempPlanet => tempPlanet.id === data.planet.id);
+            if (indexPlanetToRemove !== -1){
+                const planetToRemove = planets[indexPlanetToRemove];
+                planets[indexPlanetToRemove] = {...planetToRemove, ...{
+                    collision: true,
+                    iterations: 0
+                }};
+            }
+        break;
 
     }
 }
