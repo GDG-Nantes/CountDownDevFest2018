@@ -12,7 +12,6 @@ import ScoreList from './components/ScoreList.vue'
 import Galaxy from './components/Galaxy.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
-const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 firestore.settings(settings);
 
