@@ -74,7 +74,7 @@ export default {
 
 			this.context.save();
 			this.context.beginPath();
-			this.context.fillStyle = 'black';
+			this.context.fillStyle = '1a1a1a';
 			this.context.fillRect(0, 0, this.cw, this.ch);
 			this.context.closePath();
 		},

@@ -283,7 +283,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
-  background: black;
+  background: #1a1a1a;
 }
 #game canvas#arrow{
   flex:1;
