@@ -1,5 +1,10 @@
 <template>
   <div class="score">
+    <!--
+      Hack to avoid VueJS to create and destroy dom elements.
+      Using a v-for with key don't work because we work with 60fps and the list is changing too many times
+      to let Vue doing it's magic with key
+      -->
      <Score
         v-if="planets.length > 0"
         v-bind:planet="planets[0]"
