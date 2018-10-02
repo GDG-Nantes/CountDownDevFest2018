@@ -12,6 +12,7 @@
 import ScoreList from './components/ScoreList.vue'
 import Timer from './components/Timer.vue'
 import Galaxy from './components/Galaxy.vue'
+import {AudioPlayer} from './utils/audio/player'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -42,6 +43,7 @@ export default {
 
 	mounted() {
 		this.worker = new Worker('./computePositionsWorker.js');
+		this.audioPlayer = new AudioPlayer();
 
 
 		firestore.collection("planets").where("init", "==", true)
@@ -117,12 +119,4 @@ export default {
 	overflow: hidden;
 }
 
-
-ScoreList {
-	position: absolute;
-	width: 200px;
-	top: 0;
-	right: 0;
-	height: 100%;
-}
 </style>
