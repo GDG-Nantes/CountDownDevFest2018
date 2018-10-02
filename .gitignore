@@ -85,3 +85,8 @@ yarn-error.log*
 #firebase
 service-account.json
 firebase-config.js
+
+# Music / Video
+*.mp3
+*.mp4
+*.avi

@@ -1,11 +1,19 @@
 <template>
 	<div id="countdown-container">
 		<Galaxy v-bind:planets="planets"></Galaxy>
-		<ScoreList v-bind:planets="scores"></ScoreList>
-		<Timer
-			v-on:timer-update="timeUpdate($event)"
-			v-on:end-count-down="endCountDown()"
-		></Timer>
+		<section
+			v-if="countDownStart"
+		>
+			<ScoreList v-bind:planets="scores"></ScoreList>
+			<Timer
+				v-on:timer-update="timeUpdate($event)"
+				v-on:end-count-down="endCountDown()"
+			></Timer>
+		</section>
+		<div id="startCountDown"
+			v-if="!countDownStart"
+			v-on:click="startCountDown()"
+		>Start CountDown</div>
 		<div id="opacity" style="display:none"></div>
 	</div>
 </template>
@@ -33,7 +41,8 @@ export default {
 			planets: [],
 			worker: null,
 			audioPlayer: null,
-			countDownFinish: false
+			countDownFinish: false,
+			countDownStart: false
 		};
 	},
 	methods: {
@@ -44,6 +53,69 @@ export default {
 				case 'time':
 				break;
 			}
+		},
+		startCountDown: function() {
+			this.countDownStart = true;
+			this.worker = new Worker('./computePositionsWorker.js');
+			this.audioPlayer = new AudioPlayer();
+
+
+			firestore.collection("planets").where("init", "==", true)
+				.onSnapshot((snapshot) => {
+					snapshot.docChanges().forEach((change) => {
+							if (change.type === "added") {
+
+									this.worker.postMessage({
+										type: 'addOrUpdatePlanet',
+										planet : change.doc.data()
+									});
+									console.log("New planet: ", change.doc.data());
+							}
+							if (change.type === "modified") {
+									console.log("Modified planet: ", change.doc.data());
+							}
+							if (change.type === "removed") {
+									this.worker.postMessage({
+										type: 'removePlanet',
+										planet: change.doc.data()
+									});
+									console.log("Removed planet: ", change.doc.data());
+							}
+					});
+			});
+
+			setTimeout(() => {
+				this.worker.postMessage({
+					type: 'init'
+				});
+			}, 1000);
+
+			this.worker.onmessage = function(e) {
+				const data = e.data;
+				// console.log('Worker from vue receive message', data);
+				switch(data.type){
+					case 'planets':
+					this.planets.length = 0;
+					this.planets.push(...data.data);
+					data.data.forEach(planet => {
+						if (planet.init && planet.collision){
+							console.log('Will Notify destruction of planet : ', planet);
+							// We have to set to !init the planet
+							planet = { ...planet, ...{
+								init: false,
+								collision: false,
+								iterations: 0,
+								angle: 0,
+								x: 0,
+								y: 0
+							}};
+							firestore.collection("planets").doc(`${planet.id}`).set(planet);
+						}
+					})
+					this.scores = this.planets.slice(0,10);
+					break;
+				}
+			}.bind(this);
 		},
 		timeUpdate: function(event) {
 			if (this.audioPlayer) {
@@ -70,66 +142,6 @@ export default {
 		if (this.countDownFinish){
 			return;
 		}
-		this.worker = new Worker('./computePositionsWorker.js');
-		this.audioPlayer = new AudioPlayer();
-
-
-		firestore.collection("planets").where("init", "==", true)
-			.onSnapshot((snapshot) => {
-				snapshot.docChanges().forEach((change) => {
-						if (change.type === "added") {
-
-								this.worker.postMessage({
-									type: 'addOrUpdatePlanet',
-									planet : change.doc.data()
-								});
-								console.log("New planet: ", change.doc.data());
-						}
-						if (change.type === "modified") {
-								console.log("Modified planet: ", change.doc.data());
-						}
-						if (change.type === "removed") {
-								this.worker.postMessage({
-									type: 'removePlanet',
-									planet: change.doc.data()
-								});
-								console.log("Removed planet: ", change.doc.data());
-						}
-				});
-		});
-
-		setTimeout(() => {
-			this.worker.postMessage({
-				type: 'init'
-			});
-		}, 1000);
-
-		this.worker.onmessage = function(e) {
-			const data = e.data;
-			// console.log('Worker from vue receive message', data);
-			switch(data.type){
-				case 'planets':
-				this.planets.length = 0;
-				this.planets.push(...data.data);
-				data.data.forEach(planet => {
-					if (planet.init && planet.collision){
-						console.log('Will Notify destruction of planet : ', planet);
-						// We have to set to !init the planet
-						planet = { ...planet, ...{
-							init: false,
-							collision: false,
-							iterations: 0,
-							angle: 0,
-							x: 0,
-							y: 0
-						}};
-						firestore.collection("planets").doc(`${planet.id}`).set(planet);
-					}
-				})
-				this.scores = this.planets.slice(0,10);
-				break;
-			}
-		}.bind(this);
 	},
 
 };
@@ -145,6 +157,19 @@ export default {
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
+}
+
+#startCountDown{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	color: white;
+	background: red;
+	width: 200px;
+	height:100px;
+	font-size: 30px;
+	margin-left: -100px;
+	margin-top: -50px;
 }
 
 
