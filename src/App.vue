@@ -14,6 +14,11 @@ export default {
 </script>
 
 <style>
+@font-face {
+    font-family: 'Nasalization';
+    src: url('/assets/fonts/nasalization-rg.ttf');
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -21,7 +26,7 @@ body {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Nasalization', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
