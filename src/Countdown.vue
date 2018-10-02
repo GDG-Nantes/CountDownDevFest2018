@@ -2,6 +2,7 @@
 	<div id="countdown-container">
 		<Galaxy v-bind:planets="planets"></Galaxy>
 		<ScoreList v-bind:planets="scores"></ScoreList>
+		<Timer></Timer>
 	</div>
 </template>
 
@@ -9,6 +10,7 @@
 // https://alligator.io/vuejs/vue-html5-canvas/
 
 import ScoreList from './components/ScoreList.vue'
+import Timer from './components/Timer.vue'
 import Galaxy from './components/Galaxy.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
@@ -18,15 +20,24 @@ firestore.settings(settings);
 
 export default {
 	name: 'countdown',
-	components: {Galaxy, ScoreList},
+	components: {Galaxy, ScoreList, Timer},
 	data() {
 		return {
 			scores : [],
 			planets: [],
 			worker: null,
+			audioPlayer: null
 		};
 	},
 	methods: {
+		callBackTimer: function(event) {
+			switch(event.type){
+				case'endCountDown':
+				break;
+				case 'time':
+				break;
+			}
+		}
 	},
 
 	mounted() {
