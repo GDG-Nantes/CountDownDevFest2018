@@ -2,7 +2,11 @@
 	<div id="countdown-container">
 		<Galaxy v-bind:planets="planets"></Galaxy>
 		<ScoreList v-bind:planets="scores"></ScoreList>
-		<Timer></Timer>
+		<Timer
+			v-on:timer-update="timeUpdate($event)"
+			v-on:end-count-down="endCountDown()"
+		></Timer>
+		<div id="opacity" style="display:none"></div>
 	</div>
 </template>
 
@@ -13,6 +17,7 @@ import ScoreList from './components/ScoreList.vue'
 import Timer from './components/Timer.vue'
 import Galaxy from './components/Galaxy.vue'
 import {AudioPlayer} from './utils/audio/player'
+import {VideoPlayer} from './utils/video/player'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -27,7 +32,8 @@ export default {
 			scores : [],
 			planets: [],
 			worker: null,
-			audioPlayer: null
+			audioPlayer: null,
+			countDownFinish: false
 		};
 	},
 	methods: {
@@ -38,10 +44,32 @@ export default {
 				case 'time':
 				break;
 			}
+		},
+		timeUpdate: function(event) {
+			if (this.audioPlayer) {
+				this.audioPlayer.manageSoundVolume(event.diff);
+			}
+		},
+		endCountDown: function(){
+			this.countDownFinish = true;
+			const opacityElt = document.getElementById('opacity');
+			opacity.style.display = '';
+			setTimeout(_ => {
+				opacityElt.classList.add('black');
+				setTimeout(() => new VideoPlayer(opacityElt, () => {
+					console.log('end');
+					setTimeout(() => {
+						window.location = './assets/img/image-16-9-sponsors.jpg';
+					}, 5000);
+				}).playVideo(), 4000);
+			}, 100);
 		}
 	},
 
 	mounted() {
+		if (this.countDownFinish){
+			return;
+		}
 		this.worker = new Worker('./computePositionsWorker.js');
 		this.audioPlayer = new AudioPlayer();
 
@@ -117,6 +145,32 @@ export default {
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
+}
+
+
+#opacity {
+    position: absolute;
+    overflow: hidden;
+    background: black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 5s;
+    z-index: 100;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#opacity video {
+	height: 95vh;
+}
+
+#opacity.black {
+    opacity: 1;
 }
 
 </style>

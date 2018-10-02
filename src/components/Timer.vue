@@ -1,5 +1,5 @@
 <template>
-	<div class="timer">
+	<div class="timer" v-bind:class="{'last-minute': lastMinute}">
 		<span> {{minutes}} : {{seconds}}</span>
 	</div>
 </template>
@@ -22,11 +22,15 @@ export default {
 		callBackTimer: function(event) {
 			switch(event.type){
 				case'endCountDown':
+					this.$emit('end-count-down');
 				break;
 				case 'time':
 					this.minutes = event.value.minutes;
 					this.seconds = event.value.seconds;
 					this.lastMinute = event.value.lastMinute;
+					this.$emit('timer-update',{
+						diff: event.value.diff
+					});
 				break;
 			}
 		}
@@ -51,4 +55,17 @@ export default {
 	color: white;
 	font-size: 40pt;
 }
+
+
+.last-minute {
+    color: red;
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
 </style>
