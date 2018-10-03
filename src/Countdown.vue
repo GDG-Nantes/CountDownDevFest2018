@@ -1,7 +1,7 @@
 <template>
 	<div id="countdown-container">
 		<Galaxy v-bind:planets="planets"></Galaxy>
-		<section
+		<section id="animation-galaxy"
 			v-if="countDownStart"
 		>
 			<ScoreList v-bind:planets="scores"></ScoreList>
@@ -9,6 +9,7 @@
 				v-on:timer-update="timeUpdate($event)"
 				v-on:end-count-down="endCountDown()"
 			></Timer>
+			<h2 class="play-with-me">Throw your planet at : https://bit.ly/devfest-ntantes-2018</h2>
 		</section>
 		<div id="startCountDown"
 			v-if="!countDownStart"
@@ -178,8 +179,29 @@ export default {
 	font-size: 30px;
 	margin-left: -100px;
 	margin-top: -50px;
+	border-radius: 20px;
+	line-height: 45px;
 }
 
+#animation-galaxy{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	color: white;
+	text-align: center;
+}
+
+#animation-galaxy .play-with-me {
+	position: absolute;
+	bottom: 50px;
+	left: 0;
+	width: 100%;
+}
 
 #opacity {
     position: absolute;
