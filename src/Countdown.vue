@@ -142,6 +142,14 @@ export default {
 		if (this.countDownFinish){
 			return;
 		}
+		firestore.collection("admins").get('adminList')
+		.then((adminList)=>{
+			console.log('Admin Loggued :)');
+		})
+		.catch((error) =>{
+			console.log(error);
+			this.$router.push('/')
+		});
 	},
 
 };

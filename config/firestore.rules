@@ -1,17 +1,24 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /admin {
-      allow read, write: if false;
+  	function isAdmin() {
+      return request.auth != null
+      	&& get(/databases/$(database)/documents/admins/adminList).data[request.auth.token.email] == true
+      	&& request.auth.token.email_verified == true;
+    }
+
+    match /admins/{document=**} {
+      allow read: if isAdmin();
+      allow write, delete, update: if false;
     }
     match /config {
-      allow read: if "auth != null && root.child('admins').child(auth.token.email.replace('.', '*')).exists() && auth.token.email_verified == true";
-      allow write: if false;
+      allow read: if isAdmin();
+      allow write, delete, update: if false;
     }
 
     match /planets/{planetId} {
-      allow read, update, delete: if request.auth.uid == userId
-        || (request.auth.uid != null && exists(/databases/${databases}/documents/admin/${request.auth.token.email.replace('.','*')}) && request.auth.token.email_verified == true);
-      allow create: if request.auth.uid != null;
+      allow update, delete: if request.auth.uid == resource.data.author
+        || isAdmin();
+      allow read, create: if request.auth.uid != null;
     }
   }
 }
