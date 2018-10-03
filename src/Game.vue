@@ -1,8 +1,9 @@
 <template>
-  <div id="game">
-    <PowerArrow
-      v-bind:idUser="provider.idUser"
-      v-on:launch-planet="launchPlanet($event)"
+	<div id="game">
+		<div id="landscape" v-if="landscape">
+			<PowerArrow
+				v-bind:idUser="provider.idUser"
+				v-on:launch-planet="launchPlanet($event)"
     >
     </PowerArrow>
     <img v-bind:src="user.imageUrl"
@@ -12,6 +13,12 @@
       v-on:click="destroy"
       class="fas fa-bomb fa-6x"></i>
   </div>
+		<div id="portrait" v-if="!landscape">
+			<i id="iconRotate"
+				class="fas fa-redo fa-5x"></i>
+			<h2>Please turn your phone in landscape mode to play</h2>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -40,16 +47,22 @@ export default {
         id :0,
         name: ''
       },
+			landscape: false,
       planet: {
 
       },
 		};
 	},
-  mounted() {
+	mounted() {
 
+		this.landscape = window.innerHeight < window.innerWidth;
+		window.addEventListener("orientationchange", (event)=> {
+			// Announce the new orientation number
+			this.landscape = (window.orientation === 90 || window.orientation === -90);
+		}, false);
 
-      const user = firebase.auth().currentUser;
-      if (!user){
+			const user = firebase.auth().currentUser;
+			if (!user){
         console.log('No User :\'(');
         return;
       }
@@ -154,9 +167,10 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
-  background: #1a1a1a;
+	display: flex;
+	flex-direction: row;
+	background: #1a1a1a;
+	color: white;
 }
 
 #game #iconBomb{
@@ -174,6 +188,22 @@ export default {
   -webkit-clip-path: circle(50px at center);
   clip-path: circle(50px at center);
 }
+
+#portrait {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+#portrait i{
+	align-self: center;
+}
+
+
 html,
 body {
     overscroll-behavior-y: contain;
