@@ -1,5 +1,9 @@
 <template lang="html">
-  <div id="firebaseui-auth-container"></div>
+  <div id="auth">
+    <h1>You should be authenticate to use the application</h1>
+    <div id="firebaseui-auth-container"></div>
+    <span>it's just to play with your avatar ;). We won't sell your datas!</span>
+  </div>
 </template>
 <script>
 import firebase from 'firebase';
@@ -12,7 +16,6 @@ export default {
       signInSuccessUrl: '/',
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
         ]
       };
     var ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -20,3 +23,8 @@ export default {
     },
 }
 </script>
+<style scoped>
+#auth{
+  color: white;
+}
+</style>
