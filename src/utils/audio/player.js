@@ -21,13 +21,13 @@ export class AudioPlayer {
 
 
     _startPlayer() {
-        if (localStorage['devfestDraw-LastSong']) {
-            this.indexPlayList = +localStorage['devfestDraw-LastSong'];
+        if (localStorage['devfestCountdown-LastSong']) {
+            this.indexPlayList = +localStorage['devfestCountdown-LastSong'];
             if (this.indexPlayList >= PLAYLIST.length) {
                 this._nextSong();
             } else {
                 this._playSound(`./assets/audio/${PLAYLIST[this.indexPlayList]}`);
-                this.audioElt.currentTime = +localStorage['devfestDraw-currentTime'];
+                this.audioElt.currentTime = +localStorage['devfestCountdown-currentTime'];
             }
         } else {
             this._nextSong();
@@ -35,8 +35,8 @@ export class AudioPlayer {
     }
 
     _unload() {
-        localStorage['devfestDraw-LastSong'] = `${this.currentIndex}`;
-        localStorage['devfestDraw-currentTime'] = `${this.audioElt.currentTime}`;
+        localStorage['devfestCountdown-LastSong'] = `${this.currentIndex}`;
+        localStorage['devfestCountdown-currentTime'] = `${this.audioElt.currentTime}`;
     }
 
     /**

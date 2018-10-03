@@ -47,7 +47,7 @@ export default {
 .timer {
 	position: absolute;
 	width: 100%;
-	top: 0;
+	top: 50px;
 	left: 0;
 	height: 200px;
 }
