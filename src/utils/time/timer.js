@@ -3,7 +3,7 @@
 export default class Timer {
     constructor(callback){
         // Target Time : '2018-10-18T09:00:00'
-        this.targetDate = new Date('2018-10-02T23:59:00');
+        this.targetDate = new Date('2018-10-18T09:15:00');
         this.callback = callback;
         this.checkTime();
     }
