@@ -26,6 +26,8 @@ export default {
 }
 .planet .planet-name {
     text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .planet .planet-score {

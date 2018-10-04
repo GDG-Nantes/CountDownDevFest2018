@@ -1,4 +1,4 @@
-const numPlanets = 10;
+const numPlanets = 50;
 const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const TIME_BEFORE_PLANET_GROW = 1000;
 const MINIMUM_DISTANCE = 100;
@@ -10,7 +10,7 @@ for (let i = 0; i < numPlanets; i++){
     name: `name${i}`,
     url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
     radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-    distance: 10 + Math.random() * 400,
+    distance: 10 + Math.random() * 350,
     collision: false,
     iterations: 0,
     speed: (300 + Math.random() * 100),
@@ -109,7 +109,7 @@ function movePlanets(){
             const percentIteration = iterations / TIME_BEFORE_COLLISION_DETECTION;
             distanceToUse = planet.distance - (percentIteration * planet.distance);
         }
-        planet.x = (distanceToUse + 100) * Math.cos(planet.angle);
+        planet.x = (distanceToUse + 250) * Math.cos(planet.angle);
         planet.y = (distanceToUse ) * Math.sin(planet.angle);
         planet.iterations++;
     }

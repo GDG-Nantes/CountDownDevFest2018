@@ -46,6 +46,7 @@ import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 firestore.settings(settings);
+import {DISTANCE_PLANET_MAX} from './utils/const.js'
 
 
 export default {
@@ -108,6 +109,7 @@ export default {
 		},
 	methods:{
 		launchPlanet: function(stateMouse){
+			console.log(stateMouse)
 			this.provider.idUser = this.user.id;
 			if (!this.planet.id){
 				this.addPlanet(stateMouse);
@@ -123,13 +125,13 @@ export default {
 					name: this.user.name,
 					url: this.user.imageUrl,
 					radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-					distance: 10 + stateMouse.power * 400,
+					distance: 10 + stateMouse.power * DISTANCE_PLANET_MAX,
 					collision: false,
 					iterations: 0,
-					speed: (300 + stateMouse.power * 100 + 50 * Math.random()),
+					speed: (300 + (stateMouse.power * 100) + (50 * Math.random())),
 					// Change datas
 					score: 0,
-					angle: 0,
+					angle: stateMouse.angle,
 					x : 0,
 					y : 0,
 					init: true
@@ -152,7 +154,7 @@ export default {
 					iterations: 0,
 					speed: (300 + stateMouse.power * 100 + 50 * Math.random()),
 					// Change datas
-					angle: 0,
+					angle: stateMouse.angle,
 					x : 0,
 					y : 0,
 					init: true

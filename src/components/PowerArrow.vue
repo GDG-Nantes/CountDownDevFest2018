@@ -57,14 +57,12 @@ export default {
 				return;
 			}
 			this.touch = true;
-			console.log('onMouseDown',event);
 		},
 		onMouseUp: function(event) {
 			if (this.idUser){
 				return;
 			}
 			this.touch = false;
-			console.log('onMouseUp',event);
 			this.stateMouse.draw = false;
 			this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
 			this.$emit('launch-planet', this.stateMouse);
@@ -75,13 +73,13 @@ export default {
 				return;
 			}
 			if (this.touch){
-				const {from, to, power} = this.calculateUserLaunch(event);
+				const {from, to, power, angle} = this.calculateUserLaunch(event);
 				this.stateMouse.draw = true;
 				this.stateMouse.from = from;
 				this.stateMouse.to = to;
 				this.stateMouse.power = power;
+				this.stateMouse.angle = angle;
 			}
-			console.log(`onMouseMove ${event.touches[0].clientX}`,event);
 		},
 		colorGradient(fadeFraction) {
 			const cold = {
@@ -178,6 +176,9 @@ export default {
 			const percentArrow = 1 - ((this.canvas.width - clientX + this.leftMargin) / this.canvas.width);
 			const destinationX = clientX - this.leftMargin;
 			const destinationY = clientY;
+			const angleRad = Math.atan2(destinationY - originY, destinationX - originX);
+			const angleDeg = Math.atan(angleRad) * (180 / Math.PI);
+			const angleDegPercent = angleDeg + 180;
 			return {
 			from: {
 				X: originX,
@@ -188,7 +189,7 @@ export default {
 				Y: destinationY
 			},
 			power: percentArrow,
-			angle: Math.atan2(destinationY - originY, destinationX - originX)
+			angle: angleDegPercent
 			};
 		}
   }
