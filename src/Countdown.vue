@@ -1,6 +1,6 @@
 <template>
 	<div id="countdown-container">
-		<Galaxy v-bind:planets="planets"></Galaxy>
+		<Galaxy ref="galaxy" v-bind:planets="planets"></Galaxy>
 		<section id="animation-galaxy"
 			v-if="countDownStart"
 		>
@@ -100,6 +100,7 @@ export default {
 					this.planets.push(...data.data);
 					data.data.forEach(planet => {
 						if (planet.init && planet.collision){
+							this.$refs['galaxy'].explodedPlanet(planet);
 							console.log('Will Notify destruction of planet : ', planet);
 							// We have to set to !init the planet
 							planet = { ...planet, ...{
@@ -113,7 +114,7 @@ export default {
 							firestore.collection("planets").doc(`${planet.id}`).set(planet);
 						}
 					})
-					this.scores = this.planets.slice(0,10);
+					this.scores = this.planets.slice(0,5);
 					break;
 				}
 			}.bind(this);

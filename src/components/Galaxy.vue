@@ -11,6 +11,7 @@
 import {TIME_BEFORE_COLLISION_DETECTION} from '../utils/const.js';
 import StarHelper from '../utils/canvas/StarHelper.js';
 import PlanetHelper from '../utils/canvas/PlanetHelper.js';
+import ExplosionHelper from '../utils/canvas/ExplosionHelper.js';
 
 export default {
 	name: 'Galaxy',
@@ -24,6 +25,7 @@ export default {
 			imagesLoad: [],
 			images: [],
 			stars: [],
+			explosions: []
 		};
 	},
 	methods: {
@@ -61,10 +63,15 @@ export default {
 					this.planetHelper.drawPlanet(planet);
 				}
 			}
+			this.explosionHelper.renderExplosions();
 			this.context.restore();
 			window.requestAnimationFrame(this.animate.bind(this));
 		},
+		explodedPlanet: function(planet){
+			this.explosionHelper.explose(planet);
+		},
 	},
+
 
 
 	mounted() {
@@ -80,6 +87,7 @@ export default {
 		// Create all the stars
 		this.starHelper = new StarHelper(this.canvas, this.context);
 		this.planetHelper = new PlanetHelper(this.canvas, this.context);
+		this.explosionHelper = new ExplosionHelper(this.canvas, this.context);
 
 		this.animate();
 	},
