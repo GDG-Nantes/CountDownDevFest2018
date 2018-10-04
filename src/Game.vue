@@ -1,6 +1,7 @@
 <template>
 	<div id="game">
 		<div id="landscape" v-if="landscape">
+			<Stars></Stars>
 			<PowerArrow
 				v-bind:idUser="provider.idUser"
 				v-on:launch-planet="launchPlanet($event)"
@@ -43,6 +44,7 @@
 <script>
 
 import PowerArrow from './components/PowerArrow.vue'
+import Stars from './components/Stars.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -52,7 +54,7 @@ firestore.settings(settings);
 export default {
 	name: 'app',
 	components: {
-		PowerArrow
+		PowerArrow, Stars
 	},
 	data() {
 		return {

@@ -102,6 +102,7 @@ export default {
 			return 'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')';
 		},
 		drawState: function(){
+			
 			if (this.stateMouse.draw){
 				this.drawArrow(this.context,
 					this.canvas,
@@ -120,7 +121,7 @@ export default {
 			var headlen = 10;
 			var angle = Math.atan2(toy-fromy,tox-fromx);
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			ctx.save();
 			ctx.strokeStyle = color;
