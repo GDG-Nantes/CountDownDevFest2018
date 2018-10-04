@@ -77,6 +77,30 @@ export default {
 			}
 			console.log(`onMouseMove ${event.touches[0].clientX}`,event);
 		},
+		colorGradient(fadeFraction) {
+			const cold = {
+				red:33,
+				blue:243,
+				green:150,
+			};//#2196F3
+			const hot = {
+				red: 244,
+				blue: 54,
+				green: 67,
+			}; //#f44336
+			const fade = fadeFraction;
+			const diffRed = hot.red - cold.red;
+			const diffGreen = hot.green - cold.green;
+			const diffBlue = hot.blue - cold.blue;
+
+			const gradient = {
+			red: parseInt(Math.floor(cold.red + (diffRed * fade)), 10),
+			green: parseInt(Math.floor(cold.green + (diffGreen * fade)), 10),
+			blue: parseInt(Math.floor(cold.blue + (diffBlue * fade)), 10),
+			};
+
+			return 'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')';
+		},
 		drawState: function(){
 			if (this.stateMouse.draw){
 				this.drawArrow(this.context,
@@ -86,7 +110,7 @@ export default {
 					this.stateMouse.to.X, // To X
 					this.stateMouse.to.Y, // To Y
 					30 * this.stateMouse.power, // Width Arrow
-					'red' // Color
+					this.colorGradient(this.stateMouse.power) // Color
 				);
 			}
 			window.requestAnimationFrame(this.drawState.bind(this));
