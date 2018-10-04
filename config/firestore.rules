@@ -16,7 +16,7 @@ service cloud.firestore {
     }
 
     match /planets/{planetId} {
-      allow update, delete: if request.auth.uid == resource.data.author
+      allow update, delete: if request.auth.uid == planetId
         || isAdmin();
       allow read, create: if request.auth.uid != null;
     }
