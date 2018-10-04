@@ -8,10 +8,13 @@
 			</PowerArrow>
 			<img v-bind:src="user.imageUrl"
 			>
-			<i id="iconBomb"
-				v-if="provider.idUser"
-				v-on:click="destroy"
-				class="fas fa-bomb fa-6x"></i>
+			<span id="iconBomb"
+				class="fa-stack fa-3x" 
+			 	v-if="provider.idUser"
+				v-on:click="destroy">
+				<i class="fas fa-circle fa-stack-2x"></i>
+				<i class="fas fa-bomb fa-stack-1x fa-inverse"></i>
+			</span>
 			<i id="iconHelp"
 				v-on:click="showHelp=true"
 				class="fas fa-question-circle fa-3x"></i>
@@ -192,9 +195,16 @@ export default {
 
 #game #iconBomb{
 	position: absolute;
-	left: 60px;
+	left: 50px;
 	top: calc(50% - 50px);
 	z-index: 3;
+}
+
+#game #iconBomb .fa-circle{
+	color: rgba(255,255,255, 0.8);
+}
+#game #iconBomb .fa-bomb {
+	color: #1a1a1a;
 }
 
 #game #iconHelp{
@@ -206,11 +216,11 @@ export default {
 
 #game img{
 	position: absolute;
-	height: 100px;
+	height: 96px;
 	left: 50px;
 	top: calc(50% - 50px);
-	-webkit-clip-path: circle(50px at center);
-	clip-path: circle(50px at center);
+	-webkit-clip-path: circle(48px at center);
+	clip-path: circle(48px at center);
 }
 
 #portrait {
