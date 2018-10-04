@@ -10,10 +10,6 @@
         v-bind:planet="planets[0]"
         ></Score>
      <Score
-        v-if="planets.length > 0"
-        v-bind:planet="planets[0]"
-        ></Score>
-     <Score
         v-if="planets.length > 1"
         v-bind:planet="planets[1]"
         ></Score>
@@ -29,7 +25,7 @@
         v-if="planets.length > 4"
         v-bind:planet="planets[4]"
         ></Score>
-     <Score
+     <!--<Score
         v-if="planets.length > 5"
         v-bind:planet="planets[5]"
         ></Score>
@@ -48,7 +44,7 @@
      <Score
         v-if="planets.length > 9"
         v-bind:planet="planets[9]"
-        ></Score>
+        ></Score>-->
 
   </div>
 </template>
@@ -72,8 +68,9 @@ export default {
     top: 0;
     right: 0;
     height: 100%;
-    width: 100px;
+    width: 150px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 </style>
