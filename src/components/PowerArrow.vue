@@ -10,12 +10,15 @@
 
 <script>
 
-
+import StarHelper from '../utils/canvas/StarHelper.js';
+import PlanetHelper from '../utils/canvas/PlanetHelper.js';
+import {TIME_BEFORE_COLLISION_DETECTION} from '../utils/const.js';
 
 export default {
 	name: 'PowerArrow',
 	props: {
-		idUser: String
+		idUser: String,
+		urlAvatar: String
 	},
 	data() {
 		return {
@@ -36,11 +39,14 @@ export default {
 		// We can't access the rendering context until the canvas is mounted to the DOM.
 		// Once we have it, provide it to all child components.
 		this.canvas = this.$refs['arrow-canvas'];
-		this.context = this.$refs['arrow-canvas'].getContext('2d');
+		this.context = this.canvas.getContext('2d');
 
-		this.leftMargin = this.$refs['arrow-canvas'].getBoundingClientRect().left;
-		this.$refs['arrow-canvas'].width = this.$refs['arrow-canvas'].getBoundingClientRect().width;
-		this.$refs['arrow-canvas'].height = this.$refs['arrow-canvas'].parentElement.clientHeight;
+		this.leftMargin = this.canvas.getBoundingClientRect().left;
+		this.canvas.width = this.canvas.getBoundingClientRect().width;
+		this.canvas.height = this.canvas.parentElement.clientHeight;
+
+		this.starHelper = new StarHelper(this.canvas, this.context);
+		this.planetHelper = new PlanetHelper(this.canvas, this.context);
 
 		this.drawState();
 
@@ -102,7 +108,16 @@ export default {
 			return 'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')';
 		},
 		drawState: function(){
-			
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+			this.starHelper.drawStars();
+			this.planetHelper.drawPlanet({
+				x: 96,
+				y: (this.canvas.height / 2),
+				url: this.urlAvatar,
+				radius: 96,
+				iterations: TIME_BEFORE_COLLISION_DETECTION
+			})
 			if (this.stateMouse.draw){
 				this.drawArrow(this.context,
 					this.canvas,
@@ -121,7 +136,7 @@ export default {
 			var headlen = 10;
 			var angle = Math.atan2(toy-fromy,tox-fromx);
 
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
 
 			ctx.save();
 			ctx.strokeStyle = color;
@@ -191,7 +206,6 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
-  background: #1a1a1a;
 }
 #game canvas#arrow{
   flex:1;
