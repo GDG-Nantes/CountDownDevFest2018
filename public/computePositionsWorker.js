@@ -181,6 +181,9 @@ onmessage = function(e) {
                 }};
             }
         break;
+        case 'stopLoop':
+            continueLoop = false;
+        break;
 
     }
 }

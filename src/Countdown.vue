@@ -125,6 +125,9 @@ export default {
 			}
 		},
 		endCountDown: function(){
+			this.worker.postMessage({
+				type: 'stopLoop'
+			});	
 			this.countDownFinish = true;
 			const opacityElt = document.getElementById('opacity');
 			opacity.style.display = '';
