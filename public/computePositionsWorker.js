@@ -1,9 +1,11 @@
-const numPlanets = 50;
 const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const TIME_BEFORE_PLANET_GROW = 1000;
 const MINIMUM_DISTANCE = 100;
 const MAXIMUM_DISTANCE = 500;
 const planets = [];
+/*
+// Generate randoms planets for tests
+const numPlanets = 50;
 for (let i = 0; i < numPlanets; i++){
     planets.push({
     id: `id${i}`,
@@ -23,6 +25,7 @@ for (let i = 0; i < numPlanets; i++){
     });
 
 }
+*/
 let continueLoop = true;
 let time = 0;
 
