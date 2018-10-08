@@ -25,7 +25,9 @@ export default {
 			imagesLoad: [],
 			images: [],
 			stars: [],
-			explosions: []
+			explosions: [],
+			sunIncrementFactor: 0.02,
+			sunOpacity: 0.9,
 		};
 	},
 	methods: {
@@ -45,7 +47,15 @@ export default {
 
 		drawSun: function() {
 			this.context.translate(this.canvas.width / 2, this.canvas.height / 2);
-			this.image(this.$refs['sun'], 100, 'yellow', 0, 0);
+			if (this.sunOpacity > 1){
+				this.sunIncrementFactor = -this.sunIncrementFactor;
+			}else if (this.sunOpacity < 0.9){
+				this.sunIncrementFactor = -this.sunIncrementFactor;
+			}
+			this.sunOpacity += this.sunIncrementFactor;
+			this.context.globalAlpha = this.sunOpacity;
+			this.image(this.$refs['sun'], 200 + (Math.random() * 5), 'yellow', 0, 0);
+			this.context.globalAlpha = 1;
 		},
 
 
