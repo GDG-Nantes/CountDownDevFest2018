@@ -11,6 +11,7 @@
     "lint": "vue-cli-service lint",
     "cp-assets": "cpx \"public/assets/audio/*\" \"dist/assets/audio\" && cpx \"public/assets/video/*\" \"dist/assets/video/*\"",
     "deploy": "npm run build && firebase deploy --only hosting",
+    "deploy-ci": "npm run build && firebase deploy --only hosting --token \"$FIREBASE_TOKEN\" --project \"$PROJECT_NAME\"",
     "firebase": "firebase"
   },
   "repository": {

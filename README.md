@@ -1,3 +1,5 @@
+[ ![Codeship Status for GDG-Nantes/CountDownDevFest2018](https://app.codeship.com/projects/94ea8c60-ad04-0136-155a-0611d2b1dc9a/status?branch=master)](https://app.codeship.com/projects/309492)
+
 # CountDownDevFest2018
 Count Down project for DevFest Nantes 2018
 
