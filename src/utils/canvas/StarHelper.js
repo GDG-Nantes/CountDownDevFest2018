@@ -68,7 +68,7 @@ export default class StarHelper{
 		this.context.closePath();
 		this.context.fillStyle = "rgba(255, 255, 200, " + star.opacity + ")";
 		this.context.shadowBlur = 5;
-		this.context.shadowColor = '#ffff33';
+		this.context.shadowColor = '#fdfdff';
 		this.context.fill();
 	}
 }

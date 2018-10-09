@@ -190,7 +190,7 @@ export default {
 	height: 100%;
 	display: flex;
 	flex-direction: row;
-	background: #1a1a1a;
+	background: #302c33;
 	color: white;
 }
 

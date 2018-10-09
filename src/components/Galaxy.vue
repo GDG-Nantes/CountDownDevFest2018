@@ -39,7 +39,19 @@ export default {
 
 			this.context.save();
 			this.context.beginPath();
-			this.context.fillStyle = '1a1a1a';
+			this.context.fillStyle = '#302c33'; //#637b7a
+			this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			const gradient=this.context.createRadialGradient(
+					this.canvas.width/2, //x0
+					this.canvas.height / 2, // y0
+					10 + (Math.random() * 5), //r0
+					this.canvas.width/2, // x1
+					this.canvas.height / 2, // y1
+					500 + (Math.random() * 5) //r1
+					);
+			gradient.addColorStop(0,"#637b7a");
+			gradient.addColorStop(1,"#302c33");
+			this.context.fillStyle = gradient;
 			this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 			this.context.closePath();
 		},

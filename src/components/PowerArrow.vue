@@ -107,6 +107,18 @@ export default {
 		},
 		drawState: function(){
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			const gradient=this.context.createRadialGradient(
+					0, //x0
+					this.canvas.height, // y0
+					10, //r0
+					0, // x1
+					this.canvas.height, // y1
+					200 //r1
+					);
+			gradient.addColorStop(0,"#637b7a");
+			gradient.addColorStop(1,"#302c3300");
+			this.context.fillStyle = gradient;
+			this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 			this.starHelper.drawStars();
 			this.planetHelper.drawPlanet({
