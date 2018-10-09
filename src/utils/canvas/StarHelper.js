@@ -8,6 +8,12 @@ export default class StarHelper{
 		this._generateRandomStars(canvas.width, canvas.height)
 	}
 
+	resetSizes(canvas, context){
+		this.canvas = canvas;
+		this.context = context;
+		this._generateRandomStars(canvas.width, canvas.height);
+	}
+
 	_generateRandomStars(width, height) {
 		const numStars = 200;
 		for(let i = 0; i < numStars; i++) {

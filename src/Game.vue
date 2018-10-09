@@ -1,35 +1,49 @@
 <template>
 	<div id="game">
 		<div id="landscape" v-if="landscape">
-			<PowerArrow
-				v-bind:idUser="provider.idUser"
-				v-bind:urlAvatar="user.imageUrl"
-				v-on:launch-planet="launchPlanet($event)"
-			>
-			</PowerArrow>
-			<span id="iconBomb"
-				class="fa-stack fa-3x"
-			 	v-if="provider.idUser"
-				v-on:click="destroy">
-				<i class="fas fa-circle fa-stack-2x"></i>
-				<i class="fas fa-bomb fa-stack-1x fa-inverse"></i>
-			</span>
-			<i id="iconHelp"
-				v-on:click="showHelp=true"
-				class="fas fa-question-circle fa-3x"></i>
-			<footer>
-					<h2 v-if="!provider.idUser" >Throw your planet <i class="fas fa-space-shuttle fa-1x"></i></h2>
-					<h2 v-if="provider.idUser">Destroy your planet <i class="fas fa-bomb fa-1x"></i></h2>
-			</footer>
-			<div id="howToplay"
-				v-if="showHelp">
-				<span>To play, simply drag your avatar <i class="fas fa-hand-point-up fa-1x"></i> to the right and relase to throw the planet <i class="fas fa-space-shuttle fa-1x"></i></span>
-				<br>
-				<span>You can make your planet explode with this icon <i class="fas fa-bomb fa-1x"></i></span>
-				<br>
-				<span>Sometimes your planet will not be up to date with the main screen. Coming from outside of the galaxy can take some times ;)</span>
-				<div class="ok-btn" v-on:click="showHelp=false">OK</div>
+			<div v-if="!fullscreenMode" id="askForFullScreen">
+				<i
+					id="fullscreen"
+					v-on:click="toggleFullScreen()"
+					class="fas fa-expand fa-6x"></i>
+				<h2>Switch to full screen</h2>
 			</div>
+			<div v-if="fullscreenMode">
+				<PowerArrow
+					ref="arrow"
+					v-bind:idUser="provider.idUser"
+					v-bind:urlAvatar="user.imageUrl"
+					v-on:launch-planet="launchPlanet($event)"
+				>
+				</PowerArrow>
+				<span id="iconBomb"
+					class="fa-stack fa-3x"
+					v-if="provider.idUser"
+					v-on:click="destroy">
+					<i class="fas fa-circle fa-stack-2x"></i>
+					<i class="fas fa-bomb fa-stack-1x fa-inverse"></i>
+				</span>
+				<i id="iconHelp"
+					v-on:click="showHelp=true"
+					class="fas fa-question-circle fa-3x"></i>
+				<i id="iconExitFullScreen"
+					v-on:click="toggleFullScreen()"
+					class="fas fa-compress fa-3x"></i>
+				<footer>
+						<h2 v-if="!provider.idUser" >Throw your planet <i class="fas fa-space-shuttle fa-1x"></i></h2>
+						<h2 v-if="provider.idUser">Destroy your planet <i class="fas fa-bomb fa-1x"></i></h2>
+				</footer>
+				<div id="howToplay"
+					v-if="showHelp">
+					<span>To play, simply drag your avatar <i class="fas fa-hand-point-up fa-1x"></i> to the right and relase to throw the planet <i class="fas fa-space-shuttle fa-1x"></i></span>
+					<br>
+					<span>You can make your planet explode with this icon <i class="fas fa-bomb fa-1x"></i></span>
+					<br>
+					<span>Sometimes your planet will not be up to date with the main screen. Coming from outside of the galaxy can take some times ;)</span>
+					<div class="ok-btn" v-on:click="showHelp=false">OK</div>
+				</div>
+			</div>
+
 		</div>
 		<div id="portrait" v-if="!landscape">
 			<i id="iconRotate"
@@ -61,6 +75,7 @@ export default {
 			provider: {
 				idUser: null,
 			},
+			fullscreenMode: false,
 			showHelp: false,
 			user: {
 				imageUrl : '',
@@ -79,6 +94,7 @@ export default {
 		window.addEventListener("orientationchange", (event)=> {
 			// Announce the new orientation number
 			this.landscape = (window.orientation === 90 || window.orientation === -90);
+			this.fullscreenMode = false;
 		}, false);
 
 			const user = firebase.auth().currentUser;
@@ -90,24 +106,57 @@ export default {
 			this.user.id = user.uid;
 			this.user.name = user.displayName;
 
+			firestore.collection("planets").where("init", "==", true).where("id", "==", this.user.id)
+			.onSnapshot((snapshot) => {
+				if (snapshot.docs.length > 0){
+					this.provider.idUser = snapshot.docs[0].data().id;
+				}
+			});
 			firestore.collection("planets").where("init", "==", false).where("id", "==", this.user.id)
 			.onSnapshot((snapshot) => {
 				snapshot.docChanges().forEach((change) => {
 						if (change.type === "added") {
 							this.provider.idUser = null;
-								console.log("New planet: ", change.doc.data());
+							console.log("New planet: ", change.doc.data());
 						}
 						if (change.type === "modified") {
-								console.log("Modified planet: ", change.doc.data());
+							this.provider.idUser = null;
+							console.log("Modified planet: ", change.doc.data());
 						}
 						if (change.type === "removed") {
-								console.log("Removed planet: ", change.doc.data());
+							this.provider.idUser = change.doc.data().id;
+							console.log("Removed planet: ", change.doc.data());
 						}
 				});
 		});
 
 		},
 	methods:{
+		toggleFullScreen: function() {
+			const elem = document.getElementById('landscape');
+			if (this.fullscreenMode){
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.mozCancelFullScreen) { /* Firefox */
+					document.mozCancelFullScreen();
+				} else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+					document.webkitExitFullscreen();
+				} else if (document.msExitFullscreen) { /* IE/Edge */
+					document.msExitFullscreen();
+				}
+			} else {
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+				} else if (elem.mozRequestFullScreen) { /* Firefox */
+					elem.mozRequestFullScreen();
+				} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+					elem.webkitRequestFullscreen();
+				} else if (elem.msRequestFullscreen) { /* IE/Edge */
+					elem.msRequestFullscreen();
+				}
+			}
+			this.fullscreenMode = !this.fullscreenMode;
+		},
 		launchPlanet: function(stateMouse){
 			console.log(stateMouse)
 			this.provider.idUser = this.user.id;
@@ -215,6 +264,17 @@ export default {
 	z-index: 3;
 }
 
+#game #iconExitFullScreen{
+	position: absolute;
+	left: 30px;
+	top: 30px;
+	z-index: 3;
+}
+
+#game #fullscreen{
+	z-index: 3;
+}
+
 #game img{
 	position: absolute;
 	height: 96px;
@@ -224,7 +284,7 @@ export default {
 	clip-path: circle(48px at center);
 }
 
-#portrait {
+#portrait, #askForFullScreen {
 	position: absolute;
 	left: 0;
 	top: 0;

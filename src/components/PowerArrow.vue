@@ -13,6 +13,7 @@
 import StarHelper from '../utils/canvas/StarHelper.js';
 import PlanetHelper from '../utils/canvas/PlanetHelper.js';
 import {TIME_BEFORE_COLLISION_DETECTION} from '../utils/const.js';
+import { setTimeout } from 'timers';
 
 export default {
 	name: 'PowerArrow',
@@ -26,6 +27,7 @@ export default {
 			// so child components will update when `context` changes.
 			context: null,
 			touch: false,
+			ratio: 1,
 			stateMouse: {
 				draw: false,
 				from: {X:0,Y:0},
@@ -40,18 +42,28 @@ export default {
 		// Once we have it, provide it to all child components.
 		this.canvas = this.$refs['arrow-canvas'];
 		this.context = this.canvas.getContext('2d');
+		this.ratio = window.devicePixelRatio || 1;
 
-		this.leftMargin = this.canvas.getBoundingClientRect().left;
-		this.canvas.width = this.canvas.getBoundingClientRect().width;
-		this.canvas.height = this.canvas.parentElement.clientHeight;
+		this.fromScratch();
+		window.onresize = this.fromScratch.bind(this);
 
-		this.starHelper = new StarHelper(this.canvas, this.context);
-		this.planetHelper = new PlanetHelper(this.canvas, this.context);
-
-		this.drawState();
 
 	},
 	methods:{
+		fromScratch: function(){
+			const boudingRect = this.canvas.getBoundingClientRect();
+			this.leftMargin = boudingRect.left;// * this.ratio;
+			this.canvas.width = boudingRect.width;// * this.ratio;
+			this.canvas.height = boudingRect.height;
+
+			this.starHelper = new StarHelper(this.canvas, this.context);
+			this.planetHelper = new PlanetHelper(this.canvas, this.context);
+
+			this.drawState();
+		},
+		toggleFullScreen: function(){
+			console.log('ChangeFullScreen');
+		},
 		onMouseDown: function(event) {
 			if (this.idUser){
 				return;
@@ -185,7 +197,7 @@ export default {
 			const originY = this.canvas.height / 2;
 			const clientX = mouseEvent.touches[0].clientX;
 			const clientY = mouseEvent.touches[0].clientY;
-			const percentArrow = 1 - ((this.canvas.width - clientX + this.leftMargin) / this.canvas.width);
+			const percentArrow = 1 - (((this.canvas.width /* this.ratio*/) - clientX + this.leftMargin) / (this.canvas.width /* this.ratio*/));
 			const destinationX = clientX - this.leftMargin;
 			const destinationY = clientY;
 			const angleRad = Math.atan2(destinationY - originY, destinationX - originX);
