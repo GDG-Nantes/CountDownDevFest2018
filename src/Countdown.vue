@@ -9,7 +9,7 @@
 				v-on:timer-update="timeUpdate($event)"
 				v-on:end-count-down="endCountDown()"
 			></Timer>
-			<h2 class="play-with-me">Throw your planet at : https://bit.ly/devfest-ntantes-2018</h2>
+			<h2 class="play-with-me">Throw your planet at : https://bit.ly/devfest-nantes-2018</h2>
 		</section>
 		<div id="startCountDown"
 			v-if="!countDownStart"
@@ -43,22 +43,22 @@ export default {
 			worker: null,
 			audioPlayer: null,
 			countDownFinish: false,
-			countDownStart: false
+			countDownStart: false,
+			videoPlayer: null,
 		};
 	},
 	methods: {
-		callBackTimer: function(event) {
-			switch(event.type){
-				case'endCountDown':
-				break;
-				case 'time':
-				break;
-			}
-		},
 		startCountDown: function() {
 			this.countDownStart = true;
 			this.worker = new Worker('./computePositionsWorker.js');
 			this.audioPlayer = new AudioPlayer();
+			const opacityElt = document.getElementById('opacity');
+			this.videoPlayer = new VideoPlayer(opacityElt, () => {
+				console.log('end');
+				setTimeout(() => {
+					window.location = './assets/img/image-16-9-sponsors.jpg';
+				}, 5000);
+			})
 
 
 			firestore.collection("planets").where("init", "==", true)
@@ -127,18 +127,17 @@ export default {
 		endCountDown: function(){
 			this.worker.postMessage({
 				type: 'stopLoop'
-			});	
+			});
 			this.countDownFinish = true;
+			if (this.audioPlayer) {
+				this.audioPlayer.manageSoundVolume(0);
+			}
+			this.videoPlayer.resetVideo();
 			const opacityElt = document.getElementById('opacity');
 			opacity.style.display = '';
 			setTimeout(_ => {
 				opacityElt.classList.add('black');
-				setTimeout(() => new VideoPlayer(opacityElt, () => {
-					console.log('end');
-					setTimeout(() => {
-						window.location = './assets/img/image-16-9-sponsors.jpg';
-					}, 5000);
-				}).playVideo(), 4000);
+				setTimeout(() => this.videoPlayer.playVideo(), 4000);
 			}, 100);
 		}
 	},
