@@ -2,7 +2,7 @@
     <div class="planet">
         <img v-bind:src="planet.url">
         <div class="planet-name"> {{planet.name}}</div>
-        <div class="planet-score"> score :<br>{{planet.score}}</div>
+        <div class="planet-score">{{planet.score}}</div>
     </div>
 </template>
 
