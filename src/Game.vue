@@ -177,7 +177,7 @@ export default {
 					distance: 10 + stateMouse.power * DISTANCE_PLANET_MAX,
 					collision: false,
 					iterations: 0,
-					speed: (300 + (stateMouse.power * 100) + (50 * Math.random())),
+					speed: (300 - (stateMouse.power * 200) + (50 * Math.random())),
 					// Change datas
 					score: 0,
 					angle: stateMouse.angle,
