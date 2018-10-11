@@ -9,7 +9,7 @@
 				v-on:timer-update="timeUpdate($event)"
 				v-on:end-count-down="endCountDown()"
 			></Timer>
-			<h2 class="play-with-me">Throw your planet at : https://bit.ly/devfest-nantes-2018</h2>
+			<h2 class="play-with-me">Throw your planet at : https://bit.ly/galaxy-nantes</h2>
 		</section>
 		<div id="startCountDown"
 			v-if="!countDownStart"
