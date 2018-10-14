@@ -9,8 +9,7 @@ import Wait from './components/Wait.vue'
 
 
 Vue.config.productionTip = false
-Vue.use(VueRouter)
-
+Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: Game },
@@ -24,6 +23,21 @@ const routes = [
 // keep it simple for now.
 const router = new VueRouter({
   routes // short for `routes: routes`
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/auth'){
+    next();
+  }else {
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user) {
+        next();
+      } else {
+        next('/auth')
+      }
+    });
+  }
+
 })
 
 
