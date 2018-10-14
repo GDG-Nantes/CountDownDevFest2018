@@ -23,12 +23,14 @@ export class VideoPlayer {
     resetVideo() {
         this.videoElt.pause();
         this.videoElt.currentTime = 0;
+        this.videoElt.style.display = 'none';
     }
 
     /**
      * Play the video
      */
     playVideo() {
+        this.videoElt.style.display = '';
         this.videoElt.muted = false;
         this.videoElt.pause();
         this.videoElt.src = `./assets/video/${this.videoName}`;
