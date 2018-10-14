@@ -20,8 +20,6 @@
 </template>
 
 <script>
-// https://alligator.io/vuejs/vue-html5-canvas/
-
 import ScoreList from './components/ScoreList.vue'
 import Timer from './components/Timer.vue'
 import Galaxy from './components/Galaxy.vue'
@@ -48,13 +46,13 @@ export default {
 		};
 	},
 	methods: {
-		startCountDown: function() {
+		startCountDown() {
 			this.countDownStart = true;
 			this.worker = new Worker('./computePositionsWorker.js');
 			this.audioPlayer = new AudioPlayer();
 			const opacityElt = document.getElementById('opacity');
 			this.videoPlayer = new VideoPlayer(opacityElt, () => {
-				console.log('end');
+				// console.debug('end');
 				setTimeout(() => {
 					window.location = './assets/img/image-16-9-sponsors.jpg';
 				}, 5000);
@@ -70,17 +68,17 @@ export default {
 										type: 'addOrUpdatePlanet',
 										planet : change.doc.data()
 									});
-									console.log("New planet: ", change.doc.data());
+									// console.debug("New planet: ", change.doc.data());
 							}
 							if (change.type === "modified") {
-									console.log("Modified planet: ", change.doc.data());
+									// console.debug("Modified planet: ", change.doc.data());
 							}
 							if (change.type === "removed") {
 									this.worker.postMessage({
 										type: 'removePlanet',
 										planet: change.doc.data()
 									});
-									console.log("Removed planet: ", change.doc.data());
+									// console.debug("Removed planet: ", change.doc.data());
 							}
 					});
 			});
@@ -93,7 +91,6 @@ export default {
 
 			this.worker.onmessage = function(e) {
 				const data = e.data;
-				// console.log('Worker from vue receive message', data);
 				switch(data.type){
 					case 'planets':
 					this.planets.length = 0;
@@ -101,7 +98,7 @@ export default {
 					data.data.forEach(planet => {
 						if (planet.init && planet.collision){
 							this.$refs['galaxy'].explodedPlanet(planet);
-							console.log('Will Notify destruction of planet : ', planet);
+							// console.debug('Will Notify destruction of planet : ', planet);
 							// We have to set to !init the planet
 							planet = { ...planet, ...{
 								init: false,
@@ -119,12 +116,12 @@ export default {
 				}
 			}.bind(this);
 		},
-		timeUpdate: function(event) {
+		timeUpdate(event) {
 			if (this.audioPlayer) {
 				this.audioPlayer.manageSoundVolume(event.diff);
 			}
 		},
-		endCountDown: function(){
+		endCountDown(){
 			this.worker.postMessage({
 				type: 'stopLoop'
 			});
@@ -134,8 +131,8 @@ export default {
 			}
 			this.videoPlayer.resetVideo();
 			const opacityElt = document.getElementById('opacity');
-			opacity.style.display = '';
-			setTimeout(_ => {
+			opacityElt.style.display = '';
+			setTimeout(() => {
 				opacityElt.classList.add('black');
 				setTimeout(() => this.videoPlayer.playVideo(), 4000);
 			}, 100);
@@ -147,11 +144,12 @@ export default {
 			return;
 		}
 		firestore.collection("admins").get('adminList')
-		.then((adminList)=>{
-			console.log('Admin Loggued :)');
+		.then(()=>{
+			// console.debug('Admin Loggued :)');
 		})
 		.catch((error) =>{
-			console.log(error);
+			// eslint-disable-next-line no-console
+			console.error(error);
 			this.$router.push('/')
 		});
 	},

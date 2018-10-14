@@ -8,7 +8,6 @@
 
 <script>
 
-import {TIME_BEFORE_COLLISION_DETECTION} from '../utils/const.js';
 import StarHelper from '../utils/canvas/StarHelper.js';
 import PlanetHelper from '../utils/canvas/PlanetHelper.js';
 import ExplosionHelper from '../utils/canvas/ExplosionHelper.js';
@@ -31,11 +30,11 @@ export default {
 		};
 	},
 	methods: {
-		image: function(img, radius, color, x, y) {
+		image(img, radius) {
 			this.context.drawImage(img,0,0, img.width, img.height,0 -radius / 2,0 - radius / 2,radius, radius);
 		},
 
-		drawBackground: function() {
+		drawBackground() {
 
 			this.context.save();
 			this.context.beginPath();
@@ -57,7 +56,7 @@ export default {
 		},
 
 
-		drawSun: function() {
+		drawSun() {
 			this.context.translate(this.canvas.width / 2, this.canvas.height / 2);
 			if (this.sunOpacity > 1){
 				this.sunIncrementFactor = -this.sunIncrementFactor;
@@ -66,12 +65,12 @@ export default {
 			}
 			this.sunOpacity += this.sunIncrementFactor;
 			this.context.globalAlpha = this.sunOpacity;
-			this.image(this.$refs['sun'], 200 + (Math.random() * 5), 'yellow', 0, 0);
+			this.image(this.$refs['sun'], 200 + (Math.random() * 5));
 			this.context.globalAlpha = 1;
 		},
 
 
-		animate: function() {
+		animate() {
 			if (!this.context) return;
 
 			this.drawBackground();
@@ -89,7 +88,7 @@ export default {
 			this.context.restore();
 			window.requestAnimationFrame(this.animate.bind(this));
 		},
-		explodedPlanet: function(planet){
+		explodedPlanet(planet){
 			this.explosionHelper.explose(planet);
 		},
 	},

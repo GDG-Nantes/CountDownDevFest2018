@@ -25,26 +25,6 @@
         v-if="planets.length > 4"
         v-bind:planet="planets[4]"
         ></Score>
-     <!--<Score
-        v-if="planets.length > 5"
-        v-bind:planet="planets[5]"
-        ></Score>
-     <Score
-        v-if="planets.length > 6"
-        v-bind:planet="planets[6]"
-        ></Score>
-     <Score
-        v-if="planets.length > 7"
-        v-bind:planet="planets[7]"
-        ></Score>
-     <Score
-        v-if="planets.length > 8"
-        v-bind:planet="planets[8]"
-        ></Score>
-     <Score
-        v-if="planets.length > 9"
-        v-bind:planet="planets[9]"
-        ></Score>-->
 
   </div>
 </template>

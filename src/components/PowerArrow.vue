@@ -13,7 +13,6 @@
 import StarHelper from '../utils/canvas/StarHelper.js';
 import PlanetHelper from '../utils/canvas/PlanetHelper.js';
 import {TIME_BEFORE_COLLISION_DETECTION} from '../utils/const.js';
-import { setTimeout } from 'timers';
 
 export default {
 	name: 'PowerArrow',
@@ -50,7 +49,7 @@ export default {
 
 	},
 	methods:{
-		fromScratch: function(){
+		fromScratch(){
 			const boudingRect = this.canvas.getBoundingClientRect();
 			this.leftMargin = boudingRect.left;// * this.ratio;
 			this.canvas.width = boudingRect.width;// * this.ratio;
@@ -61,16 +60,13 @@ export default {
 
 			this.drawState();
 		},
-		toggleFullScreen: function(){
-			console.log('ChangeFullScreen');
-		},
-		onMouseDown: function(event) {
+		onMouseDown() {
 			if (this.idUser){
 				return;
 			}
 			this.touch = true;
 		},
-		onMouseUp: function(event) {
+		onMouseUp() {
 			if (this.idUser){
 				return;
 			}
@@ -80,7 +76,7 @@ export default {
 			this.$emit('launch-planet', this.stateMouse);
 
 		},
-		onMouseMove: function(event) {
+		onMouseMove(event) {
 			if (this.idUser){
 				return;
 			}
@@ -117,7 +113,7 @@ export default {
 
 			return 'rgb(' + gradient.red + ',' + gradient.green + ',' + gradient.blue + ')';
 		},
-		drawState: function(){
+		drawState(){
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			const gradient=this.context.createRadialGradient(
 					0, //x0
@@ -153,7 +149,7 @@ export default {
 			}
 			window.requestAnimationFrame(this.drawState.bind(this));
 		},
-		drawArrow: function(ctx, canvas, fromx, fromy, tox, toy, arrowWidth, color){
+		drawArrow(ctx, canvas, fromx, fromy, tox, toy, arrowWidth, color){
 			//variables to be used when creating the arrow
 			var headlen = 10;
 			var angle = Math.atan2(toy-fromy,tox-fromx);
@@ -192,7 +188,7 @@ export default {
 			ctx.stroke();
 			ctx.restore();
 		},
-		calculateUserLaunch: function(mouseEvent){
+		calculateUserLaunch(mouseEvent){
 			const originX = 90;
 			const originY = this.canvas.height / 2;
 			const clientX = mouseEvent.touches[0].clientX;

@@ -54,7 +54,6 @@
 </template>
 
 <script>
-
 import PowerArrow from './components/PowerArrow.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
@@ -93,7 +92,7 @@ export default {
 		this.showHelp = !localStorage['firstLook'];
 		localStorage['firstLook'] = true;
 		this.landscape = window.innerHeight < window.innerWidth;
-		window.addEventListener("orientationchange", (event)=> {
+		window.addEventListener("orientationchange", ()=> {
 			// Announce the new orientation number
 			this.landscape = (window.orientation === 90 || window.orientation === -90);
 			this.fullscreenMode = false;
@@ -101,7 +100,7 @@ export default {
 
 			const user = firebase.auth().currentUser;
 			if (!user){
-				console.log('No User :\'(');
+				// console.debug('No User :\'(');
 				return;
 			}
 			this.user.imageUrl = user.photoURL;
@@ -119,22 +118,22 @@ export default {
 				snapshot.docChanges().forEach((change) => {
 						if (change.type === "added") {
 							this.provider.idUser = null;
-							console.log("New planet: ", change.doc.data());
+							// console.debug("New planet: ", change.doc.data());
 						}
 						if (change.type === "modified") {
 							this.provider.idUser = null;
-							console.log("Modified planet: ", change.doc.data());
+							// console.debug("Modified planet: ", change.doc.data());
 						}
 						if (change.type === "removed") {
 							this.provider.idUser = change.doc.data().id;
-							console.log("Removed planet: ", change.doc.data());
+							// console.debug("Removed planet: ", change.doc.data());
 						}
 				});
 		});
 
 		},
 	methods:{
-		toggleFullScreen: function() {
+		toggleFullScreen() {
 			const elem = document.getElementById('landscape');
 			if (this.fullscreenMode){
 				if (document.exitFullscreen) {
@@ -159,8 +158,8 @@ export default {
 			}
 			this.fullscreenMode = !this.fullscreenMode;
 		},
-		launchPlanet: function(stateMouse){
-			console.log(stateMouse)
+		launchPlanet(stateMouse){
+			// console.debug(stateMouse)
 			this.provider.idUser = this.user.id;
 			if (!this.planet.id){
 				this.addPlanet(stateMouse);
@@ -168,7 +167,7 @@ export default {
 				this.updatePlanet(stateMouse);
 			}
 		},
-		addPlanet: function(stateMouse) {
+		addPlanet(stateMouse) {
 			const now = Date.now();
 
 			this.planet = {
@@ -179,7 +178,7 @@ export default {
 					distance: 10 + stateMouse.power * DISTANCE_PLANET_MAX,
 					collision: false,
 					iterations: 0,
-					speed: (300 - (stateMouse.power * 200) + (50 * Math.random())),
+					speed: this.calculateSpeed(stateMouse),
 					// Change datas
 					score: 0,
 					angle: stateMouse.angle,
@@ -187,23 +186,25 @@ export default {
 					y : 0,
 					init: true
 			};
+			// console.debug('Velocity : ', this.planet.speed);
 			firestore.collection("planets").doc(`${this.user.id}`).set(this.planet)
-			.then((docRef) => {
-					console.log("Document written with ID: ", this.provider.idUser);
+			.then(() => {
+					// console.debug("Document written with ID: ", this.provider.idUser);
 			})
 			.catch((error) => {
-					console.error("Error adding document: ", error);
+				// eslint-disable-next-line no-console
+				console.error("Error adding document: ", error);
 			});
 		},
-		updatePlanet: function(stateMouse) {
-			console.log('Update Planet');
+		updatePlanet(stateMouse) {
+			// console.debug('Update Planet');
 			const now = Date.now();
 			const planet = {
 					radius: 30 + ((now % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-					distance: 10 + stateMouse.power * 400,
+					distance: 10 + stateMouse.power * DISTANCE_PLANET_MAX,
 					collision: false,
 					iterations: 0,
-					speed: (300 + stateMouse.power * 100 + 50 * Math.random()),
+					speed: this.calculateSpeed(stateMouse),
 					// Change datas
 					angle: stateMouse.angle,
 					x : 0,
@@ -211,20 +212,24 @@ export default {
 					init: true
 			};
 			firestore.collection("planets").doc(`${this.user.id}`).update(planet)
-			.then((docRef) => {
-					console.log("Document written with ID: ", this.provider.idUser);
+			.then(() => {
+					// console.debug("Document written with ID: ", this.provider.idUser);
 			})
 			.catch((error) => {
-					console.error("Error adding document: ", error);
+				// eslint-disable-next-line no-console
+				console.error("Error adding document: ", error);
 			});
 		},
-		destroy: function() {
+		destroy() {
 			firestore.collection("planets").doc(`${this.user.id}`).update({
 						collision: false,
 						iterations: 0,
 						init: false
 				})
 			this.provider.idUser = null;
+		},
+		calculateSpeed(stateMouse){
+			return (300 - (stateMouse.power * 150) + (50 * Math.random()));
 		}
 	}
 }

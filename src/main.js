@@ -35,7 +35,6 @@ new Vue({
     this.$router.push('/wait')
     firebase.auth().onAuthStateChanged((user) => {
       if(user) {
-        console.log(user);
         this.$router.push(currentRoute)
       } else {
         this.$router.push('/auth')

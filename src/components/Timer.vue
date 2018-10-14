@@ -8,18 +8,18 @@
 import Timer from '../utils/time/timer'
 
 export default {
-  name: 'Timer',
-  props: {
-  },
-  data() {
-	  return {
-		  minutes: '00',
-		  seconds: '00',
-		  lastMinute: false
-	  }
-  },
-  methods: {
-		callBackTimer: function(event) {
+	name: 'Timer',
+	props: {
+	},
+	data() {
+		return {
+			minutes: '00',
+			seconds: '00',
+			lastMinute: false
+		}
+	},
+	methods: {
+		callBackTimer(event) {
 			switch(event.type){
 				case'endCountDown':
 					this.$emit('end-count-down');
@@ -36,7 +36,6 @@ export default {
 		}
 	},
 	mounted() {
-
 		new Timer(this.callBackTimer.bind(this));
 	}
 }
@@ -58,14 +57,14 @@ export default {
 
 
 .last-minute {
-    color: red;
-    animation: blink 1s linear infinite;
+	color: red;
+	animation: blink 1s linear infinite;
 }
 
 @keyframes blink {
-    50% {
-        opacity: 0;
-    }
+	50% {
+		opacity: 0;
+	}
 }
 
 </style>

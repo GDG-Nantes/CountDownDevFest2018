@@ -55,9 +55,10 @@ export class AudioPlayer {
     _nextSong() {
         try {
             this.currentIndex = this.indexPlayList;
-            this._playSound(`./assets/audio/${PLAYLIST[this.indexPlayList]}`);
             this.indexPlayList = (this.indexPlayList + 1) % PLAYLIST.length;
+            this._playSound(`./assets/audio/${PLAYLIST[this.indexPlayList]}`);
         } catch (err) {
+            // eslint-disable-next-line no-console
             console.error(err);
         }
     }

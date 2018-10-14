@@ -2,6 +2,7 @@ const TIME_BEFORE_COLLISION_DETECTION = 2000;
 const TIME_BEFORE_PLANET_GROW = 1000;
 const MINIMUM_DISTANCE = 100;
 const MAXIMUM_DISTANCE = 500;
+const SUN_RADIUS = 200;
 const planets = [];
 /*
 // Generate randoms planets for tests
@@ -79,7 +80,7 @@ function checkCollisions() {
                 planetI.radius / 2,
                 0,
                 0,
-                100
+                SUN_RADIUS / 2
             );
             const collisionJWithSun = collision(
                 planetJ.x,
@@ -87,7 +88,7 @@ function checkCollisions() {
                 planetJ.radius / 2,
                 0,
                 0,
-                100
+                SUN_RADIUS / 2
             );
 
             planetI.collision = planetI.collision || collisionDetected || planetI.distance < MINIMUM_DISTANCE || collisionIWithSun;
