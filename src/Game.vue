@@ -90,6 +90,8 @@ export default {
 	},
 	mounted() {
 
+		this.showHelp = !localStorage['firstLook'];
+		localStorage['firstLook'] = true;
 		this.landscape = window.innerHeight < window.innerWidth;
 		window.addEventListener("orientationchange", (event)=> {
 			// Announce the new orientation number
