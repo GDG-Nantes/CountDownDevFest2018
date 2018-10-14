@@ -9,7 +9,7 @@
 				v-on:timer-update="timeUpdate($event)"
 				v-on:end-count-down="endCountDown()"
 			></Timer>
-			<h2 class="play-with-me">Throw your planet at : https://bit.ly/galaxy-nantes</h2>
+			<h2 class="play-with-me">Throw your planet at : https://galaxy.gdgnantes.com</h2>
 		</section>
 		<div id="startCountDown"
 			v-if="!countDownStart"
@@ -184,6 +184,26 @@ export default {
 	margin-top: -50px;
 	border-radius: 20px;
 	line-height: 45px;
+	animation: flickerBtn 1.5s infinite alternate;
+}
+
+@keyframes flickerBtn {
+
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+
+        box-shadow:
+            0 0 .5rem #fff,
+            0 0 .5rem #fff inset,
+            0 0 2rem #f40,
+            0 0 2rem #f40 inset,
+            0 0 4rem #f40,
+            0 0 4rem #f40 inset;
+    }
+
+    20%, 24%, 55% {
+        text-shadow: none;
+        box-shadow: none;
+    }
 }
 
 #animation-galaxy{

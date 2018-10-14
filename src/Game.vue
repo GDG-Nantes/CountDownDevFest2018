@@ -311,9 +311,9 @@ export default {
 
 #game #howToplay{
 	position: absolute;
-	background: grey;
-	width: 90%;
-	height: 90%;
+	background: #1a1a1a;
+	width: calc(90% - 30px);
+	height: calc(90% - 30px);
 	top:5%;
 	left: 5%;
 	display: flex;
@@ -321,7 +321,22 @@ export default {
 	justify-content: space-around;
 	font-size:20px;
 	z-index: 4;
+	padding: 15px;
+	border-radius: 20px;
+	/*box-shadow:
+		0 0 2px 4px rgba(200,230,255,0.5),
+		0 -2px 2px 3px rgba(200,230,255,0.5) inset,
+		0 0 2px 5px rgba(100,150,255,0.9),
+		0 0 2px 7px rgba(100,150,255,1) inset,
+		0 0 8px 8px rgba(0,50,255,0.9),
+		0 0 9px 9px rgba(0,50,255,0.7) inset,
+		0 8px 30px 11px rgba(0,0,0,0.8),
+		0 8px 25px 8px rgba(0,0,0,0.7) inset;*/
+	animation: flicker 1.5s infinite alternate;
+	border: 0.4rem solid #fff;
 }
+
+
 
 #game #howToplay .ok-btn{
 	width: 50px;
@@ -331,6 +346,45 @@ export default {
 	border-radius: 10px;
 	align-self: center;
 	z-index: 4;
+	animation: flickerBtn 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+
+        box-shadow:
+            0 0 .5rem #fff,
+            0 0 .5rem #fff inset,
+            0 0 2rem #08f,
+            0 0 2rem #08f inset,
+            0 0 4rem #08f,
+            0 0 4rem #08f inset;
+    }
+
+    20%, 24%, 55% {
+        text-shadow: none;
+        box-shadow: none;
+    }
+}
+
+@keyframes flickerBtn {
+
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+
+        box-shadow:
+            0 0 .5rem #fff,
+            0 0 .5rem #fff inset,
+            0 0 2rem #f40,
+            0 0 2rem #f40 inset,
+            0 0 4rem #f40,
+            0 0 4rem #f40 inset;
+    }
+
+    20%, 24%, 55% {
+        text-shadow: none;
+        box-shadow: none;
+    }
 }
 
 html,
