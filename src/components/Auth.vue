@@ -8,7 +8,6 @@
 <script>
 import firebase from 'firebase';
 import firebaseui from 'firebaseui'
-import {config} from '../firebase/firebase-config.js';
 export default {
   name: 'auth',
   mounted() {

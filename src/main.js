@@ -10,12 +10,42 @@ import Wait from './components/Wait.vue'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
+const secureRoute = (to, from, next) => {
+  console.log('Secure Route', to, from);
+  const currentRoute = to.path;
+  if (from.path === '/wait') {
+    next();
+  }else {
+    next('/wait');
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user) {
+        next(currentRoute);
+      } else {
+        next('/auth');
+      }
+    });
+  }
+}
 
 const routes = [
-  { path: '/', component: Game },
-  { path: '/wait', component: Wait },
-  { path: '/auth', component: Auth},
-  { path: '/countdown', component: Countdown }
+  {
+    path: '/',
+    component: Game,
+    beforeEnter: secureRoute
+  },
+  {
+    path: '/wait',
+    component: Wait
+  },
+  {
+    path: '/auth',
+    component: Auth
+  },
+  {
+    path: '/countdown',
+    component: Countdown,
+    beforeEnter: secureRoute
+  }
 ]
 
 // 3. Create the router instance and pass the `routes` option
@@ -25,34 +55,7 @@ const router = new VueRouter({
   routes // short for `routes: routes`
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.path === '/auth'){
-    next();
-  }else {
-    firebase.auth().onAuthStateChanged((user) => {
-      if(user) {
-        next();
-      } else {
-        next('/auth')
-      }
-    });
-  }
-
-})
-
-
 new Vue({
   router,
-  render: createEle => createEle(App),
-  created() {
-    const currentRoute = this.$router.currentRoute.fullPath;
-    this.$router.push('/wait')
-    firebase.auth().onAuthStateChanged((user) => {
-      if(user) {
-        this.$router.push(currentRoute)
-      } else {
-        this.$router.push('/auth')
-      }
-     });
-  }
+  render: createEle => createEle(App)
 }).$mount('#app')
