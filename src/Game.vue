@@ -37,7 +37,7 @@
 					v-if="showHelp">
 					<span>To play, simply drag your avatar <i class="fas fa-hand-point-up fa-1x"></i> to the right and release to launch the planet <i class="fas fa-space-shuttle fa-1x"></i></span>
 					<br>
-					<span>You can make destroy your planet with this icon <i class="fas fa-bomb fa-1x"></i></span>
+					<span>You can destroy your planet with this icon <i class="fas fa-bomb fa-1x"></i></span>
 					<br>
 					<span>Sometimes your planet will not be up to date on the main screen. Coming from outside of the galaxy can take some times ;)</span>
 					<div class="ok-btn" v-on:click="showHelp=false">OK</div>
