@@ -1,8 +1,8 @@
 <template lang="html">
   <div id="auth">
-    <h1>You should be authenticate to use the application</h1>
+    <h1>Please authenticate to use the application</h1>
     <div id="firebaseui-auth-container"></div>
-    <span>it's just to play with your avatar ;). We won't sell your datas!</span>
+    <span>it's just to play with your avatar 😉 - We won't sell your data! 🚀</span>
   </div>
 </template>
 <script>
