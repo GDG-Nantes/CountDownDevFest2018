@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import PowerArrow from './components/PowerArrow.vue'
+import PowerArrow from '../components/PowerArrow.vue'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
 firestore.settings(settings);
-import {DISTANCE_PLANET_MAX} from './utils/const.js'
+import {DISTANCE_PLANET_MAX} from '../utils/const.js'
 
 
 export default {

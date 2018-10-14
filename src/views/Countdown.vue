@@ -20,11 +20,11 @@
 </template>
 
 <script>
-import ScoreList from './components/ScoreList.vue'
-import Timer from './components/Timer.vue'
-import Galaxy from './components/Galaxy.vue'
-import {AudioPlayer} from './utils/audio/player'
-import {VideoPlayer} from './utils/video/player'
+import ScoreList from '../components/ScoreList.vue'
+import Timer from '../components/Timer.vue'
+import Galaxy from '../components/Galaxy.vue'
+import {AudioPlayer} from '../utils/audio/player'
+import {VideoPlayer} from '../utils/video/player'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -54,7 +54,7 @@ export default {
 			this.videoPlayer = new VideoPlayer(opacityElt, () => {
 				// console.debug('end');
 				setTimeout(() => {
-					window.location = './assets/img/image-16-9-sponsors.jpg';
+					this.$router.push('/final');
 				}, 5000);
 			})
 

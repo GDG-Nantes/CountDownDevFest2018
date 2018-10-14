@@ -2,8 +2,9 @@ import firebase from  './firebase/config'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from './App.vue'
-import Countdown from './Countdown.vue'
-import Game from './Game.vue'
+import Countdown from './views/Countdown.vue'
+import Game from './views/Game.vue'
+import Final from './views/Final.vue'
 import Auth from './components/Auth.vue'
 import Wait from './components/Wait.vue'
 
@@ -32,6 +33,10 @@ const routes = [
     path: '/',
     component: Game,
     beforeEnter: secureRoute
+  },
+  {
+    path: '/final',
+    component: Final
   },
   {
     path: '/wait',
