@@ -12,7 +12,6 @@ import Wait from './components/Wait.vue'
 Vue.config.productionTip = false
 Vue.use(VueRouter);
 const secureRoute = (to, from, next) => {
-  console.log('Secure Route', to, from);
   const currentRoute = to.path;
   if (from.path === '/wait') {
     next();
