@@ -1,6 +1,7 @@
 'use strict'
 import {
-    PLAYLIST
+    PLAYLIST,
+    LASTS_SONGS_PLAYLIST
 } from './playlist.js';
 
 /**
@@ -14,6 +15,7 @@ export class AudioPlayer {
         this.currentIndex = 0;
         this.audioElt = document.createElement('audio');
         this.audioElt.style.display = 'none';
+        this.currentPlaylist = PLAYLIST;
         document.body.appendChild(this.audioElt);
         window.addEventListener('beforeunload', this._unload.bind(this));
         this._startPlayer();
@@ -23,13 +25,14 @@ export class AudioPlayer {
     _startPlayer() {
         if (localStorage['devfestCountdown-LastSong']) {
             this.indexPlayList = +localStorage['devfestCountdown-LastSong'];
-            if (this.indexPlayList >= PLAYLIST.length) {
+            if (this.indexPlayList >= this.currentPlaylist.length) {
                 this._nextSong();
             } else {
-                this._playSound(`./assets/audio/${PLAYLIST[this.indexPlayList]}`);
+                this._playSound(`./assets/audio/${this.currentPlaylist[this.indexPlayList]}`);
                 this.audioElt.currentTime = +localStorage['devfestCountdown-currentTime'];
             }
         } else {
+            this.indexPlayList = -1;
             this._nextSong();
         }
     }
@@ -54,9 +57,9 @@ export class AudioPlayer {
      */
     _nextSong() {
         try {
-            this.currentIndex = this.indexPlayList;
-            this.indexPlayList = (this.indexPlayList + 1) % PLAYLIST.length;
-            this._playSound(`./assets/audio/${PLAYLIST[this.indexPlayList]}`);
+            this.currentIndex = Math.max(this.indexPlayList, 0);
+            this.indexPlayList = (this.indexPlayList + 1) % this.currentPlaylist.length;
+            this._playSound(`./assets/audio/${this.currentPlaylist[this.indexPlayList]}`);
         } catch (err) {
             // eslint-disable-next-line no-console
             console.error(err);
@@ -68,7 +71,21 @@ export class AudioPlayer {
      */
     manageSoundVolume(delta) {
         if (delta < 10 * 1000) {
-            this.audioElt.volume = Math.min(Math.max(0, delta / (10 * 1000)), 0.5);
+            this.audioElt.volume = Math.min(Math.max(0, delta / (10 * 1000)), 0.7);
         }
+    }
+
+    manageVolumeFromPercent(percent) {
+
+        if (percent > 0){
+            this.audioElt.volume = Math.min(percent, 1);
+        }
+    }
+
+    switchToLastsSongPlaylist(){
+        this.audioElt.volume = 1;
+        this.indexPlayList = 0;
+        this.currentPlaylist = LASTS_SONGS_PLAYLIST;
+        this._nextSong();
     }
 }

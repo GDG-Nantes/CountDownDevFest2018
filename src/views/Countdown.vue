@@ -28,6 +28,8 @@ import {VideoPlayer} from '../utils/video/player'
 import firebase from 'firebase/app'
 const firestore = firebase.firestore();
 const settings = {/* your settings... */ timestampsInSnapshots: true};
+const timeBeforeLastSongs = 90 * 1000; // 1 Minute 30
+const dropTimeForLastSong = 5 * 1000; // 5 sec
 firestore.settings(settings);
 
 
@@ -42,6 +44,7 @@ export default {
 			audioPlayer: null,
 			countDownFinish: false,
 			countDownStart: false,
+			switchToLastsSongs: false,
 			videoPlayer: null,
 		};
 	},
@@ -117,7 +120,17 @@ export default {
 			}.bind(this);
 		},
 		timeUpdate(event) {
-			if (this.audioPlayer) {
+			// If we're in the last song delay, we first drop the sound of current sound before
+			if (event.diff < timeBeforeLastSongs &&
+				event.diff > (timeBeforeLastSongs - dropTimeForLastSong)){
+				const adjustDiff = event.diff - (timeBeforeLastSongs - dropTimeForLastSong);
+				this.audioPlayer.manageVolumeFromPercent(adjustDiff / dropTimeForLastSong);
+			} else if (event.diff < timeBeforeLastSongs &&
+				!this.switchToLastsSongs
+			) {
+				this.audioPlayer.switchToLastsSongPlaylist();
+				this.switchToLastsSongs = true;
+			} else if (this.audioPlayer) {
 				this.audioPlayer.manageSoundVolume(event.diff);
 			}
 		},

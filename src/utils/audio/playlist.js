@@ -20,3 +20,7 @@ export const PLAYLIST = [
     "2018_Intergalactic_-_Beastie_Boys.mp3",
     "2018_The_Supermen_Lovers_-_Starlight.mp3.mp3",
 ];
+
+export const LASTS_SONGS_PLAYLIST = [
+    "2018_acdc-thunderstruck-official-video.mp3",
+]
