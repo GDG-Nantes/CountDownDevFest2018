@@ -153,7 +153,7 @@ function compute(){
     })
 
     time++;
-    setTimeout(compute,0);
+    setTimeout(compute,10);
 }
 
 onmessage = function(e) {
