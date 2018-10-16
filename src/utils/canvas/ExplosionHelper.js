@@ -75,10 +75,10 @@ class Explosion {
 
 	update() {
 	  for (var i = 0; i < this.particles.length; i++) {
-		this.particles[i].update();
-		if (this.particles[i].r < .5) {
-		  this.particles.splice(i, 1)
-		}
+			this.particles[i].update();
+			if (this.particles[i].r < .5) {
+				this.particles.splice(i, 1)
+			}
 	  }
 	}
 

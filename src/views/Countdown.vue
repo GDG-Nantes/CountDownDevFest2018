@@ -1,6 +1,6 @@
 <template>
 	<div id="countdown-container">
-		<Galaxy ref="galaxy" v-bind:planets="planets"></Galaxy>
+		<Galaxy ref="galaxy"></Galaxy>
 		<section id="animation-galaxy"
 			v-if="countDownStart"
 		>
@@ -39,7 +39,6 @@ export default {
 	data() {
 		return {
 			scores : [],
-			planets: [],
 			worker: null,
 			audioPlayer: null,
 			countDownFinish: false,
@@ -92,13 +91,13 @@ export default {
 				});
 			}, 1000);
 
-			this.worker.onmessage = function(e) {
+			this.worker.onmessage = function workerMessage(e) {
 				const data = e.data;
 				switch(data.type){
 					case 'planets':
-					this.planets.length = 0;
-					this.planets.push(...data.data);
-					data.data.forEach(planet => {
+
+					const firebaseBatch = firestore.batch();
+					data.data.forEach((planet) => {
 						if (planet.init && planet.collision){
 							this.$refs['galaxy'].explodedPlanet(planet);
 							// console.debug('Will Notify destruction of planet : ', planet);
@@ -111,10 +110,14 @@ export default {
 								x: 0,
 								y: 0
 							}};
-							firestore.collection("planets").doc(`${planet.id}`).set(planet);
+							const planetUpdateRef = firestore.collection("planets").doc(`${planet.id}`);
+							firebaseBatch.set(planetUpdateRef, planet);
 						}
-					})
-					this.scores = this.planets.slice(0,5);
+					});
+					firebaseBatch.commit();
+					// Hack Vue databinding because it cause issue of performance else (change detection mencanism)
+					this.$refs['galaxy'].setPlanets(data.data);
+					this.scores = data.data.slice(0,5);
 					break;
 				}
 			}.bind(this);

@@ -14,9 +14,6 @@ import ExplosionHelper from '../utils/canvas/ExplosionHelper.js';
 
 export default {
 	name: 'Galaxy',
-	props: {
-		planets: Array
-	},
 	data() {
 		return {
 			// This is the CanvasRenderingContext that children will draw to.
@@ -78,19 +75,24 @@ export default {
 			this.drawSun();
 
 			// We take a copy to show planets
-			const planets = this.planets.slice();
-			for (let planet of planets){
-				if (!planet.collision){
-					this.planetHelper.drawPlanet(planet);
+			if (this.planets) {
+				const planets = this.planets.slice();
+				for (let planet of planets){
+					if (!planet.collision){
+						this.planetHelper.drawPlanet(planet);
+					}
 				}
+				this.explosionHelper.renderExplosions();
 			}
-			this.explosionHelper.renderExplosions();
 			this.context.restore();
 			window.requestAnimationFrame(this.animate.bind(this));
 		},
 		explodedPlanet(planet){
 			this.explosionHelper.explose(planet);
 		},
+		setPlanets(planets){
+			this.planets = planets;
+		}
 	},
 
 

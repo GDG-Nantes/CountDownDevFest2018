@@ -4,28 +4,38 @@ const MINIMUM_DISTANCE = 100;
 const MAXIMUM_DISTANCE = 500;
 const SUN_RADIUS = 200;
 const planets = [];
-/*
 // Generate randoms planets for tests
-const numPlanets = 50;
-for (let i = 0; i < numPlanets; i++){
-    planets.push({
-    id: `id${i}`,
-    name: `name${i}`,
-    url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
-    radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
-    distance: 10 + Math.random() * 350,
-    collision: false,
-    iterations: 0,
-    speed: (300 + Math.random() * 100),
-    init: true,
-    // Change datas
-    angle: 0,
-    score: 0,
-    x : 0,
-    y : 0
-    });
+/*
+const numPlanets = 800;
+let countPlanets = 0;
+//for (let i = 0; i < numPlanets; i++){
+    const arrowCreate = ()=>{
+        const i = countPlanets;
+        if (countPlanets >= numPlanets){
+            return;
+        }
+        planets.push({
+            id: `id${i}`,
+            name: `name${i}`,
+            url: "https://pbs.twimg.com/profile_images/973550404456861696/3GMoz0SV_400x400.jpg",
+            radius: 30 + ((i % 2) === 0 ? -1 * Math.random() * 10 : Math.random() * 10),
+            distance: 10 + Math.random() * 350,
+            collision: false,
+            iterations: 0,
+            speed: (300 + Math.random() * 100),
+            init: true,
+            // Change datas
+            angle: 0,
+            score: 0,
+            x : 0,
+            y : 0
+        });
+        countPlanets++;
+        setTimeout(arrowCreate,100)
+    }
+    setTimeout(arrowCreate,100)
 
-}
+//}
 */
 let continueLoop = true;
 let time = 0;
