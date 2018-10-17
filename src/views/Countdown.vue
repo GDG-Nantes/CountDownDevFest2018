@@ -20,25 +20,24 @@
 </template>
 
 <script>
-import ScoreList from '../components/ScoreList.vue'
-import Timer from '../components/Timer.vue'
-import Galaxy from '../components/Galaxy.vue'
-import {AudioPlayer} from '../utils/audio/player'
-import {VideoPlayer} from '../utils/video/player'
-import firebase from 'firebase/app'
+import ScoreList from '../components/ScoreList.vue';
+import Timer from '../components/Timer.vue';
+import Galaxy from '../components/Galaxy.vue';
+import { AudioPlayer } from '../utils/audio/player';
+import { VideoPlayer } from '../utils/video/player';
+import firebase from 'firebase/app';
 const firestore = firebase.firestore();
-const settings = {/* your settings... */ timestampsInSnapshots: true};
-const timeBeforeLastSongs = 90 * 1000; // 1 Minute 30
+const settings = { /* your settings... */ timestampsInSnapshots: true };
+const timeBeforeLastSongs = 4 * 60 * 1000 + 57 * 1000; // all thunderstuck //1 Minute 30
 const dropTimeForLastSong = 5 * 1000; // 5 sec
 firestore.settings(settings);
 
-
 export default {
 	name: 'countdown',
-	components: {Galaxy, ScoreList, Timer},
+	components: { Galaxy, ScoreList, Timer },
 	data() {
 		return {
-			scores : [],
+			scores: [],
 			worker: null,
 			audioPlayer: null,
 			countDownFinish: false,
@@ -57,90 +56,99 @@ export default {
 				// console.debug('end');
 				setTimeout(() => {
 					this.$router.push('/final');
-				}, 5000);
-			})
-
-
-			firestore.collection("planets").where("init", "==", true)
-				.onSnapshot((snapshot) => {
-					snapshot.docChanges().forEach((change) => {
-							if (change.type === "added") {
-
-									this.worker.postMessage({
-										type: 'addOrUpdatePlanet',
-										planet : change.doc.data()
-									});
-									// console.debug("New planet: ", change.doc.data());
-							}
-							if (change.type === "modified") {
-									// console.debug("Modified planet: ", change.doc.data());
-							}
-							if (change.type === "removed") {
-									this.worker.postMessage({
-										type: 'removePlanet',
-										planet: change.doc.data()
-									});
-									// console.debug("Removed planet: ", change.doc.data());
-							}
-					});
+				}, 500);
 			});
+
+			firestore
+				.collection('planets')
+				.where('init', '==', true)
+				.onSnapshot(snapshot => {
+					snapshot.docChanges().forEach(change => {
+						if (change.type === 'added') {
+							this.worker.postMessage({
+								type: 'addOrUpdatePlanet',
+								planet: change.doc.data(),
+							});
+							// console.debug("New planet: ", change.doc.data());
+						}
+						if (change.type === 'modified') {
+							// console.debug("Modified planet: ", change.doc.data());
+						}
+						if (change.type === 'removed') {
+							this.worker.postMessage({
+								type: 'removePlanet',
+								planet: change.doc.data(),
+							});
+							// console.debug("Removed planet: ", change.doc.data());
+						}
+					});
+				});
 
 			setTimeout(() => {
 				this.worker.postMessage({
-					type: 'init'
+					type: 'init',
 				});
 			}, 1000);
 
 			this.worker.onmessage = function workerMessage(e) {
 				const data = e.data;
-				switch(data.type){
+				switch (data.type) {
 					case 'planets':
-
-					const firebaseBatch = firestore.batch();
-					data.data.forEach((planet) => {
-						if (planet.init && planet.collision){
-							this.$refs['galaxy'].explodedPlanet(planet);
-							// console.debug('Will Notify destruction of planet : ', planet);
-							// We have to set to !init the planet
-							planet = { ...planet, ...{
-								init: false,
-								collision: false,
-								iterations: 0,
-								angle: 0,
-								x: 0,
-								y: 0
-							}};
-							const planetUpdateRef = firestore.collection("planets").doc(`${planet.id}`);
-							firebaseBatch.set(planetUpdateRef, planet);
-						}
-					});
-					firebaseBatch.commit();
-					// Hack Vue databinding because it cause issue of performance else (change detection mencanism)
-					this.$refs['galaxy'].setPlanets(data.data);
-					this.scores = data.data.slice(0,5);
-					break;
+						const firebaseBatch = firestore.batch();
+						data.data.forEach(planet => {
+							if (planet.init && planet.collision) {
+								this.$refs['galaxy'].explodedPlanet(planet);
+								// console.debug('Will Notify destruction of planet : ', planet);
+								// We have to set to !init the planet
+								planet = {
+									...planet,
+									...{
+										init: false,
+										collision: false,
+										iterations: 0,
+										angle: 0,
+										x: 0,
+										y: 0,
+									},
+								};
+								const planetUpdateRef = firestore
+									.collection('planets')
+									.doc(`${planet.id}`);
+								firebaseBatch.set(planetUpdateRef, planet);
+							}
+						});
+						firebaseBatch.commit();
+						// Hack Vue databinding because it cause issue of performance else (change detection mencanism)
+						this.$refs['galaxy'].setPlanets(data.data);
+						this.scores = data.data.slice(0, 5);
+						break;
 				}
 			}.bind(this);
 		},
 		timeUpdate(event) {
 			// If we're in the last song delay, we first drop the sound of current sound before
-			if (event.diff < timeBeforeLastSongs &&
-				event.diff > (timeBeforeLastSongs - dropTimeForLastSong)){
-				const adjustDiff = event.diff - (timeBeforeLastSongs - dropTimeForLastSong);
-				this.audioPlayer.manageVolumeFromPercent(adjustDiff / dropTimeForLastSong);
-			} else if (event.diff < timeBeforeLastSongs &&
-				!this.switchToLastsSongs
+			if (
+				event.diff < timeBeforeLastSongs &&
+				event.diff > timeBeforeLastSongs - dropTimeForLastSong
 			) {
+				const adjustDiff =
+					event.diff - (timeBeforeLastSongs - dropTimeForLastSong);
+				this.audioPlayer.manageVolumeFromPercent(
+					adjustDiff / dropTimeForLastSong,
+				);
+			} else if (event.diff < timeBeforeLastSongs && !this.switchToLastsSongs) {
 				this.audioPlayer.switchToLastsSongPlaylist();
 				this.switchToLastsSongs = true;
 			} else if (this.audioPlayer) {
 				this.audioPlayer.manageSoundVolume(event.diff);
 			}
 		},
-		endCountDown(){
+		endCountDown() {
 			this.worker.postMessage({
-				type: 'stopLoop'
+				type: 'stopLoop',
 			});
+			this.worker.terminate();
+			this.$refs['galaxy'].stopFramesFunction();
 			this.countDownFinish = true;
 			if (this.audioPlayer) {
 				this.audioPlayer.manageSoundVolume(0);
@@ -152,24 +160,25 @@ export default {
 				opacityElt.classList.add('black');
 				setTimeout(() => this.videoPlayer.playVideo(), 4000);
 			}, 100);
-		}
+		},
 	},
 
 	mounted() {
-		if (this.countDownFinish){
+		if (this.countDownFinish) {
 			return;
 		}
-		firestore.collection("admins").get('adminList')
-		.then(()=>{
-			// console.debug('Admin Loggued :)');
-		})
-		.catch((error) =>{
-			// eslint-disable-next-line no-console
-			console.error(error);
-			this.$router.push('/')
-		});
+		firestore
+			.collection('admins')
+			.get('adminList')
+			.then(() => {
+				// console.debug('Admin Loggued :)');
+			})
+			.catch(error => {
+				// eslint-disable-next-line no-console
+				console.error(error);
+				this.$router.push('/');
+			});
 	},
-
 };
 </script>
 
@@ -185,14 +194,14 @@ export default {
 	overflow: hidden;
 }
 
-#startCountDown{
+#startCountDown {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	color: white;
 	background: red;
 	width: 200px;
-	height:100px;
+	height: 100px;
 	font-size: 30px;
 	margin-left: -100px;
 	margin-top: -50px;
@@ -202,25 +211,27 @@ export default {
 }
 
 @keyframes flickerBtn {
+	0%,
+	19%,
+	21%,
+	23%,
+	25%,
+	54%,
+	56%,
+	100% {
+		box-shadow: 0 0 0.5rem #fff, 0 0 0.5rem #fff inset, 0 0 2rem #f40,
+			0 0 2rem #f40 inset, 0 0 4rem #f40, 0 0 4rem #f40 inset;
+	}
 
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-
-        box-shadow:
-            0 0 .5rem #fff,
-            0 0 .5rem #fff inset,
-            0 0 2rem #f40,
-            0 0 2rem #f40 inset,
-            0 0 4rem #f40,
-            0 0 4rem #f40 inset;
-    }
-
-    20%, 24%, 55% {
-        text-shadow: none;
-        box-shadow: none;
-    }
+	20%,
+	24%,
+	55% {
+		text-shadow: none;
+		box-shadow: none;
+	}
 }
 
-#animation-galaxy{
+#animation-galaxy {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -241,28 +252,27 @@ export default {
 }
 
 #opacity {
-    position: absolute;
-    overflow: hidden;
-    background: black;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 5s;
-    z-index: 100;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+	position: absolute;
+	overflow: hidden;
+	background: black;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	transition: opacity 5s;
+	z-index: 100;
+	display: flex;
+	flex: 1;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 #opacity video {
 	height: 95vh;
 }
 
 #opacity.black {
-    opacity: 1;
+	opacity: 1;
 }
-
 </style>
